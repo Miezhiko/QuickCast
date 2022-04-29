@@ -10,7 +10,7 @@ void click() {
   Inputs[1].type = INPUT_MOUSE;
   Inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
 
-  SendInput(3, Inputs, sizeof(INPUT));
+  SendInput(2, Inputs, sizeof(INPUT));
 }
 
 LRESULT __stdcall KeyboardCallback(int c, WPARAM p, LPARAM l) {
