@@ -8,10 +8,6 @@ void click() {
   Inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
   SendInput(1, Inputs, sizeof(INPUT));
 
-  // SLEEP !!!
-  // BECAUSE YOU CLICK AND UNCLICK
-  Sleep(2);
-
   Inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTUP;
   SendInput(1, Inputs, sizeof(INPUT));
 }
