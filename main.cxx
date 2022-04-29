@@ -3,14 +3,17 @@
 HHOOK kh, mh;
 
 void click() {
-  INPUT Inputs[2] = {0};
+  INPUT Inputs[1];
   Inputs[0].type = INPUT_MOUSE;
   Inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+  SendInput(1, Inputs, sizeof(INPUT));
 
-  Inputs[1].type = INPUT_MOUSE;
-  Inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+  // SLEEP !!!
+  // BECAUSE YOU CLICK AND UNCLICK
+  Sleep(2);
 
-  SendInput(2, Inputs, sizeof(INPUT));
+  Inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+  SendInput(1, Inputs, sizeof(INPUT));
 }
 
 LRESULT __stdcall KeyboardCallback(int c, WPARAM p, LPARAM l) {
