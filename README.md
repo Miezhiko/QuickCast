@@ -5,3 +5,7 @@
 
  - sets quick cast on some buttons
  - blocks scroll
+
+# TODO
+
+fix becoming a zombie
