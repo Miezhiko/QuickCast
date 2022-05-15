@@ -8,5 +8,5 @@
 
 # TODO
 
-fix becoming a zombie
-completly recode to raw input listener after injection
+ - fix becoming a zombie (it's because there are too much of mouse events)
+ - completly recode to raw input listener after injection
