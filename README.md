@@ -9,3 +9,4 @@
 # TODO
 
 fix becoming a zombie
+completly recode to raw input listener after injection
