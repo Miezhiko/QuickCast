@@ -14,7 +14,7 @@ LRESULT __stdcall KeyboardCallback(int c, WPARAM p, LPARAM l) {
     switch(p) {
       case WM_KEYUP:
       case WM_SYSKEYUP: {
-        PKBDLLHOOKSTRUCT btn = (PKBDLLHOOKSTRUCT)&l;
+        PKBDLLHOOKSTRUCT btn = (PKBDLLHOOKSTRUCT)l;
          if (btn->vkCode == 0x5A) { // Z
           mouseLeftClick();
         }
