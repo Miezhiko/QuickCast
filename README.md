@@ -7,3 +7,12 @@ work in progress
 ----------------
 
 at the moment it's more like an experiment
+
+global hook thing
+-----------------
+
+ - register some hotkeys for quickcast
+ - click `HOME` to enable or disable hotkeys
+ - current quickcast hotkeys are: `Z` and `A`
+
+and so there you go...
