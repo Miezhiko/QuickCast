@@ -1,8 +1,8 @@
 #include <Windows.h>
 
-const DWORD MOVE_KEY   = 0x5A;    // Z
-const DWORD ATTACK_KEY = 0x41;    // A
-const DWORD TOGGLE_KEY = VK_HOME; // HOME
+const DWORD MOVE_KEY   = 0x5A;      // Z
+const DWORD ATTACK_KEY = 0x41;      // A
+const DWORD TOGGLE_KEY = VK_SCROLL; // HOME
 
 static INPUT INPUT_DOWN;
 static INPUT INPUT_UP;
