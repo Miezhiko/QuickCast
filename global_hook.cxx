@@ -43,6 +43,11 @@ LRESULT __stdcall KeyboardCallback(int c, WPARAM p, LPARAM l) {
 }
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+  HANDLE hHandle = CreateMutex( NULL, TRUE, "quickcast" );
+  if(ERROR_ALREADY_EXISTS == GetLastError()) {
+    return 1;
+  }
+
   KEYBOARD_HOOK = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardCallback, NULL, 0);
 
   INPUT_DOWN.type           = INPUT_UP.type           = INPUT_MOUSE;
@@ -58,5 +63,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
   }
 
   UnhookWindowsHookEx(KEYBOARD_HOOK);
+
+  ReleaseMutex( hHandle );
+  CloseHandle( hHandle );
+
   return static_cast<int>(msg.wParam);
 }
