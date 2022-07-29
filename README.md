@@ -11,8 +11,11 @@ at the moment it's more like an experiment
 global hook thing
 -----------------
 
+ - turning on num lock
  - register some hotkeys for quickcast
- - click `HOME` to enable or disable hotkeys
+ - `Scroll Lock` indicates that quick cast is enabled
+ - click `Scroll Lock` to enable or disable hotkeys
  - current quickcast hotkeys are: `Z` and `A`
+ - blocks prscrn, win key etc...
 
 and so there you go...
