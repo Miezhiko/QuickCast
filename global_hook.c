@@ -102,9 +102,6 @@ INT WINAPI WinMain( HINSTANCE hInstance
     if (bRet != -1)  {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
-      if (msg.message == WM_QUIT) {
-        break;
-      }
     }
   }
 
