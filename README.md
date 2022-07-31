@@ -16,7 +16,8 @@ global hook thing
  - `Scroll Lock` indicates that quick cast is enabled
  - click `Scroll Lock` to enable or disable hotkeys
  - current quickcast hotkeys are: `Z` and `A`
+ - controls screen borders (menu, bottom menu, minimap)
  - blocks prscrn, win key etc...
- - use Ctrl+F12 to exit
+ - use Ctrl+Backspace to exit
 
 and so there you go...

@@ -1,10 +1,17 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#define MENU_HEIGHT     75
+#define GAME_HEIGHT     1100
+#define GAME_HEIGHT2    1000
+#define MINIMAP_WIDTH   695
+#define MINIMAP_WIDTH2  800
+#define GAME_MID_WIDTH  1750
+
 #define MOVE_KEY    0x5A
 #define ATTACK_KEY  0x41
 #define TOGGLE_KEY  VK_SCROLL
-#define EXIT_KEY    0x7B
+#define EXIT_KEY    VK_BACK
 
 const CHAR MUTEX_NAME[10] = "quickcast";
 const INT SIZE_OF_INPUT = sizeof(INPUT);
@@ -16,9 +23,27 @@ static HHOOK KEYBOARD_HOOK;
 
 static BOOL HOTKEYS_ON = TRUE;
 
+static POINT CURSOR_POSITION;
+
 inline VOID mouseLeftClick() {
-  SendInput(1, &INPUT_DOWN, SIZE_OF_INPUT);
-  SendInput(1, &INPUT_UP, SIZE_OF_INPUT);
+  if (GetCursorPos(&CURSOR_POSITION)) {
+    if (CURSOR_POSITION.y < MENU_HEIGHT) {
+      SetCursorPos(CURSOR_POSITION.x, MENU_HEIGHT);
+    }
+    if (CURSOR_POSITION.y > GAME_HEIGHT2) {
+      if (CURSOR_POSITION.x > GAME_MID_WIDTH) {
+        SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT2);
+      } else if (CURSOR_POSITION.x > MINIMAP_WIDTH && CURSOR_POSITION.y > GAME_HEIGHT) {
+        if (CURSOR_POSITION.x > MINIMAP_WIDTH2) {
+          SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
+        } else {
+          SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT2);
+        }
+      }
+    }
+    SendInput(1, &INPUT_DOWN, SIZE_OF_INPUT);
+    SendInput(1, &INPUT_UP, SIZE_OF_INPUT);
+  }
 }
 
 inline VOID processHotkeys(KBDLLHOOKSTRUCT *kbd) {
