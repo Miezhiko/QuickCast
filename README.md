@@ -17,5 +17,6 @@ global hook thing
  - click `Scroll Lock` to enable or disable hotkeys
  - current quickcast hotkeys are: `Z` and `A`
  - blocks prscrn, win key etc...
+ - use Ctrl+F12 to exit
 
 and so there you go...

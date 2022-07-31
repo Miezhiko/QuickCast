@@ -4,6 +4,7 @@
 #define MOVE_KEY    0x5A
 #define ATTACK_KEY  0x41
 #define TOGGLE_KEY  VK_SCROLL
+#define EXIT_KEY    0x7B
 
 const CHAR MUTEX_NAME[10] = "quickcast";
 const INT SIZE_OF_INPUT = sizeof(INPUT);
@@ -28,6 +29,10 @@ inline VOID processHotkeys(KBDLLHOOKSTRUCT *kbd) {
       break;
     case TOGGLE_KEY:
       HOTKEYS_ON = !HOTKEYS_ON;
+      break;
+    case EXIT_KEY:
+      if (GetKeyState( VK_CONTROL ) & 0x8000)
+        PostQuitMessage(0);
       break;
     default:
       break;
@@ -91,9 +96,20 @@ INT WINAPI WinMain( HINSTANCE hInstance
   INPUT_DOWN.mi.dwFlags     = MOUSEEVENTF_LEFTDOWN;
   INPUT_UP.mi.dwFlags       = MOUSEEVENTF_LEFTUP;
 
-  while (GetMessage(NULL, NULL, WM_KEYFIRST, WM_KEYLAST));
+  BOOL bRet; 
+  MSG msg;
+  while( (bRet = GetMessage( &msg, NULL, WM_KEYFIRST, WM_KEYLAST )) != 0 ) {
+    if (bRet != -1)  {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+      if (msg.message == WM_QUIT) {
+        break;
+      }
+    }
+  }
 
   UnhookWindowsHookEx(KEYBOARD_HOOK);
+
   // Turn off Scroll Lock
   if (GetKeyState(TOGGLE_KEY) & 0x0001) {
     keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
@@ -103,5 +119,5 @@ INT WINAPI WinMain( HINSTANCE hInstance
   CloseHandle( hHandle );
   ReleaseMutex( hHandle );
 
-  return 0;
+  return msg.wParam;
 }
