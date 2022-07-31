@@ -33,9 +33,11 @@ inline VOID mouseLeftClick() {
     if (CURSOR_POSITION.y > GAME_HEIGHT2) {
       if (CURSOR_POSITION.x > GAME_MID_WIDTH) {
         SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT2);
-      } else if (CURSOR_POSITION.x > MINIMAP_WIDTH && CURSOR_POSITION.y > GAME_HEIGHT) {
+      } else if (CURSOR_POSITION.x > MINIMAP_WIDTH) {
         if (CURSOR_POSITION.x > MINIMAP_WIDTH2) {
-          SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
+          if (CURSOR_POSITION.y > GAME_HEIGHT) {
+            SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
+          }
         } else {
           SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT2);
         }
