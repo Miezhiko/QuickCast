@@ -61,12 +61,6 @@ inline VOID mouseLeftClick() {
 
 inline VOID processHotkeys(KBDLLHOOKSTRUCT *kbd) {
   switch (kbd->vkCode) {
-    /*
-    case MOVE_KEY:
-    case ATTACK_KEY:
-      if (HOTKEYS_ON) mouseLeftClick();
-      break;
-    */
     case TOGGLE_KEY:
       HOTKEYS_ON = !HOTKEYS_ON;
       break;
@@ -124,13 +118,10 @@ inline VOID parseConfig() {
   INT len;
   GetPrivateProfileSectionA(KEYS_SECTION, keys, INI_FILE_MAX, CONF_FILE);
   // calculate array lenght
-  CHAR *current = keys;
-  while (*current) {
-    len = strlen(current);
-    currentStr = strtok_s(current, "=", &context);
-    ++CONFIG_KEYS_SIZE;
-    current += len + 1;
-  }
+  CHAR *current;
+  for(current = keys; *current; ++current)
+    CONFIG_KEYS_SIZE += *current == '\n';
+  const char *str;
   CONFIG_KEYS = malloc(CONFIG_KEYS_SIZE * sizeof(DWORD));
   CONFIG_KEYS_SIZE = 0;
   len = 0;
