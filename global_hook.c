@@ -94,7 +94,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
           case VK_SNAPSHOT:
           case VK_LWIN:
           case VK_RWIN:
-            return 1;
+            if (HOTKEYS_ON) return 1;
           default: break;
         }
         break;
