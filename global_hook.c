@@ -15,7 +15,7 @@ static LONG MINIMAP_WIDTH   = 695;
 static LONG MINIMAP_WIDTH2  = 800;
 static LONG GAME_MID_WIDTH  = 1750;
 
-const CHAR *CONF_FILE       = "conf.ini";
+const CHAR *CONF_FILE       = "./conf.ini";
 const CHAR *BORDERS_SECTION = "BORDERS";
 const CHAR *KEYS_SECTION    = "KEYS";
 const CHAR *MUTEX_NAME      = "quickcast";
