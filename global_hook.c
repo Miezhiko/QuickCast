@@ -40,8 +40,6 @@ static HHOOK KEYBOARD_HOOK;
 static POINT CURSOR_POSITION;
 static POINT STORED_CURSOR_POSITION;
 
-// global dyno iterator meme
-static INT              YEE;
 static BOOL SILLY_WALK_LOCK = FALSE;
 
 // NT kernel sleep
@@ -154,7 +152,7 @@ VOID sillyWalkLOL(VOID) {
 VOID backAndForwardVertical(VOID) {
   if (GetCursorPos(&CURSOR_POSITION)) {
     shift_down();
-    for (YEE = 0; YEE < 100; ++YEE) {
+    for (INT YEE = 0; YEE < 100; ++YEE) {
       SetCursorPos(CURSOR_POSITION.x, CURSOR_POSITION.y - 25);
       mouseRightClick();
       SetCursorPos(CURSOR_POSITION.x, CURSOR_POSITION.y + 25);
@@ -167,7 +165,7 @@ VOID backAndForwardVertical(VOID) {
 VOID backAndForwardHorizontal(VOID) {
   if (GetCursorPos(&CURSOR_POSITION)) {
     shift_down();
-    for (YEE = 0; YEE < 100; ++YEE) {
+    for (INT YEE = 0; YEE < 100; ++YEE) {
       SetCursorPos(CURSOR_POSITION.x - 25, CURSOR_POSITION.y);
       mouseRightClick();
       SetCursorPos(CURSOR_POSITION.x + 25, CURSOR_POSITION.y);
