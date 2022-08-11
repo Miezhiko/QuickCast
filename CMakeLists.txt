@@ -9,6 +9,8 @@ option(USE_LTO "Use link time optimization" TRUE)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
 add_executable (quickcast WIN32 global_hook.c)
+target_link_libraries(quickcast ntdll)
+
 configure_file( ${CMAKE_SOURCE_DIR}/conf.ini
                 ${CMAKE_CURRENT_BINARY_DIR}/Release/conf.ini
                 COPYONLY )

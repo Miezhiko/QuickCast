@@ -15,22 +15,29 @@ Configuration
 you need to modify conf.ini file
 
 ```ini
+# BORDERS_CHECK - avoid clicking on menus using quickcast
+# CUSTOM_MACROS - mostly useless macros (work in progress)
+# (you probably should disable CUSTOM_MACROS)
+[SETTINGS]
+BORDERS_CHECK   = 1
+CUSTOM_MACROS   = 1
+
 # you can add more keys here and change their values
 # (key names are ignored, current ones are A and Z)
-[KEYS]
+[QUICKCAST]
 ATTACK          = 0x41
 MOVE            = 0x5A
 
 # this is to avoid clicking on menus
 # change BORDERS_CHECK to 0 to disable checks
 [BORDERS]
-BORDERS_CHECK   = 1
 MENU_HEIGHT     = 75
 GAME_HEIGHT     = 1100
 GAME_HEIGHT2    = 1000
 MINIMAP_WIDTH   = 695
 MINIMAP_WIDTH2  = 800
 GAME_MID_WIDTH  = 1750
+
 ```
 
 Story
@@ -48,5 +55,6 @@ global hook thing
  - controls screen borders (menu, bottom menu, minimap)
  - blocks prscrn, win key etc...
  - use Ctrl+Backspace to exit
+ - Silly walk (LOL?)
 
 and so there you go...
