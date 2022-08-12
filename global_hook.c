@@ -212,8 +212,12 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
             if (HOTKEYS_ON) return 1;
             break;
           case VK_CAPITAL:  // Caps Lock
-            if (HOTKEYS_ON && CUSTOM_MACROS) {
-              sillyWalkLOL();
+            if (HOTKEYS_ON) {
+              if (GetKeyState( VK_CONTROL ) & 0x8000) {
+                CUSTOM_MACROS = !CUSTOM_MACROS;
+              } else if (CUSTOM_MACROS) {
+                sillyWalkLOL();
+              }
               return 1;
             }
             break;

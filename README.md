@@ -20,7 +20,7 @@ you need to modify conf.ini file
 # (you probably should disable CUSTOM_MACROS)
 [SETTINGS]
 BORDERS_CHECK   = 1
-CUSTOM_MACROS   = 1
+CUSTOM_MACROS   = 0
 
 # you can add more keys here and change their values
 # (key names are ignored, current ones are A and Z)
@@ -52,9 +52,10 @@ global hook thing
  - register some hotkeys for quickcast
  - `Scroll Lock` indicates that quick cast is enabled
  - click `Scroll Lock` to enable or disable hotkeys
+ - `Ctrl+Caps Lock` enables custom macros (such as silly walk)
  - controls screen borders (menu, bottom menu, minimap)
  - blocks prscrn, win key etc...
- - use Ctrl+Backspace to exit
+ - use `Ctrl+Backspace` to exit
  - Silly walk (LOL?)
 
 and so there you go...
