@@ -1,16 +1,23 @@
 cmake_minimum_required(VERSION 3.18)
 
 add_compile_options(-W2)
-set(CMAKE_CXX_FLAGS_RELEASE "/Oi /Oy /O2 /GL /Qpar /WX")
+set(CMAKE_CXX_FLAGS_RELEASE "/Oi /Ot /Oy /O2 /GL /Qpar /WX")
 
-project (quickcast)
+project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
-add_executable (quickcast WIN32 global_hook.c)
-target_link_libraries(quickcast ntdll)
+include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/src")
+add_executable (${CMAKE_PROJECT_NAME} WIN32 src/global_hook.c)
 
-configure_file( ${CMAKE_SOURCE_DIR}/conf.ini
+target_precompile_headers(${CMAKE_PROJECT_NAME}
+  PRIVATE
+    src/stdafx.h
+)
+
+target_link_libraries(${CMAKE_PROJECT_NAME} ntdll)
+
+configure_file( ${CMAKE_SOURCE_DIR}/misc/conf.ini.example
                 ${CMAKE_CURRENT_BINARY_DIR}/Release/conf.ini
                 COPYONLY )
