@@ -64,6 +64,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
           case VK_SNAPSHOT:
           case VK_LWIN:
           case VK_RWIN:
+          case VK_F9: // might crash games
             if (HOTKEYS_ON) return 1;
             break;
           case VK_CAPITAL:  // Caps Lock
