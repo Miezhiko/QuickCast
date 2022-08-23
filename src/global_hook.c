@@ -2,7 +2,7 @@
 
 #include "stdafx.h"   // include system headers
 #include "static.h"   // static variables and constants
-#include "utils.h"    // misc helper utilities
+#include "input.h"    // basic input functions
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
 
@@ -23,9 +23,6 @@ inline VOID bordersCheck(VOID) {
         }
       }
     }
-    if (CUSTOM_MACROS) {
-      STORED_CURSOR_POSITION = CURSOR_POSITION;
-    }
   }
 }
 
@@ -39,14 +36,18 @@ inline VOID processHotkeys(DWORD code) {
         PostQuitMessage(0);
       break;
     default:
-      if (HOTKEYS_ON)
-      for( CONFIG_KEYS_ITERATOR = 0
-         ; CONFIG_KEYS_ITERATOR < CONFIG_KEYS_SIZE
-         ; ++CONFIG_KEYS_ITERATOR ) {
-        if (code == CONFIG_KEYS[CONFIG_KEYS_ITERATOR]) {
-          bordersCheck();
-          mouseLeftClick();
-          break;
+      if (HOTKEYS_ON) {
+        for( CONFIG_KEYS_ITERATOR = 0
+           ; CONFIG_KEYS_ITERATOR < CONFIG_KEYS_SIZE
+           ; ++CONFIG_KEYS_ITERATOR ) {
+          if (code == CONFIG_KEYS[CONFIG_KEYS_ITERATOR]) {
+            bordersCheck();
+            if (CUSTOM_MACROS) {
+              STORED_CURSOR_POSITION = CURSOR_POSITION;
+            }
+            mouseLeftClick();
+            break;
+          }
         }
       }
       break;
@@ -65,7 +66,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
           case VK_LWIN:
           case VK_RWIN:
           case VK_F9: // might crash games
-            if (HOTKEYS_ON) return 1;
+            return 1;
             break;
           case VK_CAPITAL:  // Caps Lock
             if (HOTKEYS_ON) {

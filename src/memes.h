@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "static.h"
+#include "utils.h"
 #include "input.h"
 
 VOID sillyWalkLOL(VOID) {
