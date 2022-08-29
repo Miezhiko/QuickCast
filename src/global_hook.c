@@ -10,18 +10,10 @@ inline VOID bordersCheck(VOID) {
   if (BORDERS_CHECK && GetCursorPos(&CURSOR_POSITION)) {
     if (CURSOR_POSITION.y < MENU_HEIGHT) {
       SetCursorPos(CURSOR_POSITION.x, MENU_HEIGHT);
-    } else if (CURSOR_POSITION.y > GAME_HEIGHT2) {
-      if (CURSOR_POSITION.x > GAME_MID_WIDTH) {
-        SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT2);
-      } else if (CURSOR_POSITION.x > MINIMAP_WIDTH) {
-        if (CURSOR_POSITION.x > MINIMAP_WIDTH2) {
-          if (CURSOR_POSITION.y > GAME_HEIGHT) {
-            SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
-          }
-        } else {
-          SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT2);
-        }
-      }
+    } else if (CURSOR_POSITION.y > GAME_HEIGHT
+            && CURSOR_POSITION.x > GAME_MID_WIDTH
+            && CURSOR_POSITION.x < GAME_MID_WIDTH2) {
+      SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
     }
   }
 }
