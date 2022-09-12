@@ -9,7 +9,13 @@ option(USE_LTO "Use link time optimization" TRUE)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/src")
-add_executable (${CMAKE_PROJECT_NAME} WIN32 src/global_hook.c)
+set(RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_PROJECT_NAME}.rc")
+add_executable (${CMAKE_PROJECT_NAME}
+                WIN32
+                src/main.c
+                ${RESOURCE})
+
+add_definitions(-DSOURCE_DIR=${CMAKE_SOURCE_DIR})
 
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE

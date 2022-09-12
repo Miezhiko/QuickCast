@@ -12,6 +12,11 @@
 
 #define MUTEX_NAME          "QuickCast"
 
+#define ID_ABOUT            2000
+#define ID_EXIT             2001
+
+#define IDR_ICO_MAIN        101
+
 static BOOL BORDERS_CHECK   = TRUE;
 static BOOL CUSTOM_MACROS   = FALSE;
 
@@ -27,6 +32,8 @@ DWORD *CONFIG_KEYS          = NULL;
 INT CONFIG_KEYS_SIZE        = 0;
 INT CONFIG_KEYS_ITERATOR    = 0;
 
+static HANDLE MUTEX_HANDLE  = 0;
+
 static INPUT INPUT_DOWN;
 static INPUT INPUT_UP;
 
@@ -39,3 +46,10 @@ static POINT CURSOR_POSITION;
 static POINT STORED_CURSOR_POSITION;
 
 static BOOL SILLY_WALK_LOCK = FALSE;
+
+static BOOL MODAL_STATE     = FALSE;
+const CHAR* ICON_PATH       = "/resources/1.ico";
+
+static HWND WINDOW          = NULL;
+
+#define SOME_TEXT "Sometimes my eyes smile but the plasters wrapped around my skin are covered in blades. I always wanted to be a dragon, not a princess locked in a castle."

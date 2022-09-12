@@ -5,6 +5,10 @@
 #include "input.h"    // basic input functions
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
+#include "tray.h"
+
+#define STRINGIFY(x) #x
+#define STRINGIFY_M(x) STRINGIFY(x)
 
 inline VOID bordersCheck(VOID) {
   if (BORDERS_CHECK && GetCursorPos(&CURSOR_POSITION)) {
@@ -25,7 +29,11 @@ inline VOID processHotkeys(DWORD code) {
       break;
     case EXIT_KEY:
       if (GetKeyState( VK_CONTROL ) & 0x8000)
-        PostQuitMessage(0);
+        if (WINDOW) {
+          PostMessage( WINDOW, WM_CLOSE, 0, 0 );
+        } else {
+          PostQuitMessage(0);
+        }
       break;
     default:
       if (HOTKEYS_ON) {
@@ -49,7 +57,6 @@ inline VOID processHotkeys(DWORD code) {
 LRESULT CALLBACK KeyboardCallback( INT uMsg
                                  , WPARAM wParam
                                  , LPARAM lParam ) {
-
   if (uMsg == HC_ACTION) {
     switch(wParam) {
       case WM_KEYDOWN: {
@@ -106,9 +113,37 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
-  HANDLE hHandle = CreateMutexA(NULL, TRUE, MUTEX_NAME);
+  MUTEX_HANDLE = CreateMutexA(NULL, TRUE, MUTEX_NAME);
   if(ERROR_ALREADY_EXISTS == GetLastError()) {
     return 1;
+  }
+
+  FindResourceA(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), "ICON");
+
+  {
+    WNDCLASSEX wclx; 
+    memset(&wclx, 0, sizeof(wclx));
+    wclx.cbSize         = sizeof( wclx );
+    wclx.style          = 0;
+    wclx.lpfnWndProc    = &WndProc;
+    wclx.cbClsExtra     = 0;
+    wclx.cbWndExtra     = 0;
+    wclx.hInstance      = hInstance;
+    wclx.hCursor        = LoadCursor( NULL, IDC_ARROW );
+    wclx.hbrBackground  = (HBRUSH)( COLOR_BTNFACE + 1 );   
+
+    wclx.lpszMenuName   = NULL;
+    wclx.lpszClassName  = MUTEX_NAME;
+
+    RegisterClassEx( &wclx );
+  }
+
+  {
+    WINDOW = CreateWindowExA(0, MUTEX_NAME, TEXT("Title"), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+    if ( !WINDOW ) {
+      MessageBox(NULL, "Can't create window!", TEXT("Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
+      return 1;
+    }
   }
 
   // using sleep with lower than 1ms timeouts
@@ -147,7 +182,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   BOOL bRet; 
   MSG msg;
-  while( ( bRet = GetMessageA(&msg, NULL, WM_KEYFIRST, WM_KEYLAST) ) != 0 ) {
+  while( ( bRet = GetMessageA(&msg, NULL, 0, 0) ) != 0 ) {
     if (bRet != -1)  {
       TranslateMessage(&msg);
       DispatchMessageA(&msg);
@@ -163,9 +198,9 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
-  if (hHandle) {
-    CloseHandle(hHandle);
-    ReleaseMutex(hHandle);
+  if (MUTEX_HANDLE) {
+    CloseHandle(MUTEX_HANDLE);
+    ReleaseMutex(MUTEX_HANDLE);
   }
 
   return msg.wParam;
