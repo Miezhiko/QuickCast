@@ -6,6 +6,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "/Oi /Ot /Oy /O2 /GL /Qpar /WX")
 project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
+option(WITH_TRAY "Display tray icon" FALSE)
+
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/src")
@@ -16,6 +18,7 @@ add_executable (${CMAKE_PROJECT_NAME}
                 ${RESOURCE})
 
 add_definitions(-DSOURCE_DIR=${CMAKE_SOURCE_DIR})
+add_definitions(-DWITH_TRAY=${WITH_TRAY})
 
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE

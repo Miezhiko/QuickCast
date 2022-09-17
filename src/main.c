@@ -5,10 +5,10 @@
 #include "input.h"    // basic input functions
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
-#include "tray.h"
 
-#define STRINGIFY(x) #x
-#define STRINGIFY_M(x) STRINGIFY(x)
+#ifdef WITH_TRAY
+#include "tray.h"
+#endif
 
 inline VOID bordersCheck(VOID) {
   if (BORDERS_CHECK && GetCursorPos(&CURSOR_POSITION)) {
@@ -118,6 +118,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     return 1;
   }
 
+#ifdef WITH_TRAY
   FindResourceA(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), "ICON");
 
   {
@@ -145,6 +146,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
       return 1;
     }
   }
+#endif
 
   // using sleep with lower than 1ms timeouts
   // weird shit that can turn your process into zombie
