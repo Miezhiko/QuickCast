@@ -6,7 +6,7 @@
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
 
-#ifdef WITH_TRAY
+#if WITH_TRAY
 #include "tray.h"
 #endif
 
@@ -118,7 +118,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     return 1;
   }
 
-#ifdef WITH_TRAY
+#if WITH_TRAY
   FindResourceA(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), "ICON");
 
   {
