@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "/Oi /Ot /Oy /O2 /GL /Qpar /WX")
 project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
-option(WITH_TRAY "Display tray icon" FALSE)
+option(WITH_TRAY "Display tray icon" TRUE)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
@@ -18,7 +18,16 @@ add_executable (${CMAKE_PROJECT_NAME}
                 ${RESOURCE})
 
 add_definitions(-DSOURCE_DIR=${CMAKE_SOURCE_DIR})
-add_definitions(-DWITH_TRAY=${WITH_TRAY})
+
+if (WITH_TRAY)
+  execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  add_definitions(-DHASH_CMAKE=${GIT_COMMIT_HASH})
+  add_definitions(-DWITH_TRAY=${WITH_TRAY})
+endif (WITH_TRAY)
 
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE

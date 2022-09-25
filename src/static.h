@@ -46,10 +46,3 @@ static POINT CURSOR_POSITION;
 static POINT STORED_CURSOR_POSITION;
 
 static BOOL SILLY_WALK_LOCK = FALSE;
-
-static BOOL MODAL_STATE     = FALSE;
-const CHAR* ICON_PATH       = "/resources/1.ico";
-
-static HWND WINDOW          = NULL;
-
-#define SOME_TEXT "Sometimes my eyes smile but the plasters wrapped around my skin are covered in blades. I always wanted to be a dragon, not a princess locked in a castle."

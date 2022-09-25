@@ -6,8 +6,8 @@
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
 
-#if WITH_TRAY
-#include "tray.h"
+#ifdef WITH_TRAY
+#include "tray.h"     // tray icon (optional)
 #endif
 
 inline VOID bordersCheck(VOID) {
@@ -26,15 +26,19 @@ inline VOID processHotkeys(DWORD code) {
   switch (code) {
     case TOGGLE_KEY:
       HOTKEYS_ON = !HOTKEYS_ON;
-      break;
+      return;
     case EXIT_KEY:
       if (GetKeyState( VK_CONTROL ) & 0x8000)
+        #ifdef WITH_TRAY
         if (WINDOW) {
           PostMessage( WINDOW, WM_CLOSE, 0, 0 );
         } else {
           PostQuitMessage(0);
         }
-      break;
+        #else
+        PostQuitMessage(0);
+        #endif
+      return;
     default:
       if (HOTKEYS_ON) {
         for( CONFIG_KEYS_ITERATOR = 0
@@ -42,15 +46,14 @@ inline VOID processHotkeys(DWORD code) {
            ; ++CONFIG_KEYS_ITERATOR ) {
           if (code == CONFIG_KEYS[CONFIG_KEYS_ITERATOR]) {
             bordersCheck();
+            mouseLeftClick();
             if (CUSTOM_MACROS) {
               STORED_CURSOR_POSITION = CURSOR_POSITION;
             }
-            mouseLeftClick();
-            break;
+            return;
           }
         }
       }
-      break;
   }
 }
 
@@ -118,7 +121,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     return 1;
   }
 
-#if WITH_TRAY
+#ifdef WITH_TRAY
   FindResourceA(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), "ICON");
 
   {

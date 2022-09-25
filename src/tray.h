@@ -4,6 +4,18 @@
 #include <shellapi.h>
 #include <winuser.h>
 
+#define STRINGIFY(x) #x
+#define STRINGIFY_M(x) STRINGIFY(x)
+
+#define VERSION STRINGIFY_M(HASH_CMAKE)
+
+static BOOL MODAL_STATE     = FALSE;
+const CHAR* ICON_PATH       = "/resources/1.ico";
+
+static HWND WINDOW          = NULL;
+
+const LPCSTR SOME_TEXT = "Sometimes my eyes smile but the plasters wrapped around my skin are covered in blades. I always wanted to be a dragon, not a princess locked in a castle.";
+
 void RemoveTrayIcon( HWND hWnd, UINT uID ) {
   NOTIFYICONDATAA nid;
                   nid.hWnd = hWnd;
@@ -22,7 +34,7 @@ void AddTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
   char buffer[MAX_PATH];
   GetModuleFileNameA( NULL, buffer, MAX_PATH );
   ExtractIconExA( buffer, 0, NULL, &(nid.hIcon), 1 ); 
-  strcpy        ( nid.szTip, "Tool Tip" );
+  strcpy        ( nid.szTip, VERSION );
 
   Shell_NotifyIconA( NIM_ADD, &nid );
 }
@@ -36,7 +48,7 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
 
   SetMenuDefaultItem( hPop, ID_ABOUT, FALSE );
   SetFocus          ( hWnd );
-  SendMessage       ( hWnd, WM_INITMENUPOPUP, (WPARAM)hPop, 0 );
+  SendMessageA      ( hWnd, WM_INITMENUPOPUP, (WPARAM)hPop, 0 );
 
   {
 
@@ -52,7 +64,7 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
                                      | TPM_RETURNCMD
                                      | TPM_NONOTIFY
                                      , curpos->x, curpos->y, 0, hWnd, NULL );
-      SendMessage( hWnd, WM_COMMAND, cmd, 0 );
+      SendMessageA( hWnd, WM_COMMAND, cmd, 0 );
     }
   }
 
@@ -66,36 +78,22 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
       AddTrayIcon( hWnd, 1, WM_APP, 0 );
       return 0;
     case WM_CLOSE:
-      RemoveTrayIcon (hWnd, 1);
+      RemoveTrayIcon(hWnd, 1);
       PostQuitMessage(0);
 
-      UnhookWindowsHookEx(KEYBOARD_HOOK);
-      free(CONFIG_KEYS);
-
-      // Turn off Scroll Lock
-      if (GetKeyState(TOGGLE_KEY) & 0x0001) {
-        keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-        keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-      }
-
-      if (MUTEX_HANDLE) {
-        CloseHandle(MUTEX_HANDLE);
-        ReleaseMutex(MUTEX_HANDLE);
-      }
-
-      return DefWindowProc( hWnd, uMsg, wParam, lParam );
+      return DefWindowProcA( hWnd, uMsg, wParam, lParam );
 
     case WM_COMMAND:
       switch (LOWORD(wParam)) {
         if ( MODAL_STATE ) { return 1; }
         case ID_ABOUT:
           MODAL_STATE = TRUE;
-          MessageBox( hWnd, TEXT(SOME_TEXT), TEXT(MUTEX_NAME), MB_ICONINFORMATION | MB_OK );
+          MessageBoxA( hWnd, SOME_TEXT, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           MODAL_STATE = FALSE;
           return 0;
 
         case ID_EXIT:
-          PostMessage( hWnd, WM_CLOSE, 0, 0 );
+          PostMessageA( hWnd, WM_CLOSE, 0, 0 );
           return 0;
       }
 
@@ -104,18 +102,18 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_APP:
       switch (lParam) {
         case WM_LBUTTONDBLCLK:
-          MessageBox( hWnd, TEXT(SOME_TEXT), TEXT(MUTEX_NAME), MB_ICONINFORMATION | MB_OK );
+          MessageBoxA( hWnd, SOME_TEXT, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
 
         case WM_RBUTTONUP:
           SetForegroundWindow( hWnd );
           ShowPopupMenu(hWnd, NULL, -1 );
-          PostMessage( hWnd, WM_APP + 1, 0, 0 );
+          PostMessageA( hWnd, WM_APP + 1, 0, 0 );
           return 0;
       }
 
       return 0;
   }
 
-  return DefWindowProc( hWnd, uMsg, wParam, lParam );
+  return DefWindowProcA( hWnd, uMsg, wParam, lParam );
 }
