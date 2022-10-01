@@ -122,7 +122,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   }
 
 #ifdef WITH_TRAY
-  FindResourceW(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), L"ICON");
+  FindResourceW(hInstance, MAKEINTRESOURCEW(IDR_ICO_MAIN), L"ICON");
 
   {
     WNDCLASSEXW wclx; 
@@ -133,7 +133,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     wclx.cbClsExtra     = 0;
     wclx.cbWndExtra     = 0;
     wclx.hInstance      = hInstance;
-    wclx.hCursor        = LoadCursorW( NULL, IDC_ARROW );
+    wclx.hCursor        = LoadCursorW( NULL, MAKEINTRESOURCEW(IDC_ARROW) );
     wclx.hbrBackground  = (HBRUSH)( COLOR_BTNFACE + 1 );   
 
     wclx.lpszMenuName   = NULL;
@@ -143,9 +143,9 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   }
 
   {
-    WINDOW = CreateWindowExW(0, MUTEX_NAME, TEXT("Title"), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+    WINDOW = CreateWindowExW(0, MUTEX_NAME, TEXT(L"Title"), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
     if ( !WINDOW ) {
-      MessageBoxW(NULL, L"Can't create window!", TEXT("Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
+      MessageBoxW(NULL, L"Can't create window!", TEXT(L"Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
       return 1;
     }
   }

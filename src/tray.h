@@ -14,8 +14,6 @@ const WCHAR* ICON_PATH      = L"/resources/1.ico";
 
 static HWND WINDOW          = NULL;
 
-const LPCWSTR SOME_TEXT = L"Sometimes my eyes smile but the plasters wrapped around my skin are covered in blades. I always wanted to be a dragon, not a princess locked in a castle.";
-
 void RemoveTrayIcon( HWND hWnd, UINT uID ) {
   NOTIFYICONDATAW nid;
                   nid.hWnd = hWnd;
@@ -72,6 +70,17 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   return 0;
 }
 
+inline VOID DragonBox(HWND hWnd, LPCWSTR title, UINT flags) {
+  MODAL_STATE = TRUE;
+
+  WCHAR* dragon = malloc(MAX_PATH * sizeof(WCHAR));
+  LoadStringW(GetModuleHandle(NULL), IDS_DRAGON, dragon, MAX_PATH);
+  MessageBoxW( hWnd, dragon, title, flags );
+  free(dragon);
+
+  MODAL_STATE = FALSE;
+}
+
 static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) { 
   switch (uMsg) {
     case WM_CREATE:
@@ -87,9 +96,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
       switch (LOWORD(wParam)) {
         if ( MODAL_STATE ) { return 1; }
         case ID_ABOUT:
-          MODAL_STATE = TRUE;
-          MessageBoxW( hWnd, SOME_TEXT, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
-          MODAL_STATE = FALSE;
+          DragonBox(hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK);
           return 0;
 
         case ID_EXIT:
@@ -102,7 +109,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_APP:
       switch (lParam) {
         case WM_LBUTTONDBLCLK:
-          MessageBoxW( hWnd, SOME_TEXT, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
+          DragonBox(hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK);
           return 0;
 
         case WM_RBUTTONUP:

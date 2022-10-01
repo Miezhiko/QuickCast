@@ -1,1 +1,10 @@
-IDR_ICO_MAIN ICON DISCARDABLE L"resources/app.ico"
+#pragma code_page(65001)
+
+IDR_ICO_MAIN ICON DISCARDABLE "resources/app.ico"
+
+#define IDS_DRAGON 102
+
+STRINGTABLE
+BEGIN
+  IDS_DRAGON "Иногда у меня смеются глаза, а пластыри обёрнутые вокруг моей кожи покрыты лезвиями. Я всегда хотела быть драконом, а не принцессой, запертой в замке."
+END

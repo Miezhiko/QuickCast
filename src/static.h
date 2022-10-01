@@ -16,6 +16,7 @@
 #define ID_EXIT             2001
 
 #define IDR_ICO_MAIN        101
+#define IDS_DRAGON          102
 
 static BOOL BORDERS_CHECK   = TRUE;
 static BOOL CUSTOM_MACROS   = FALSE;
