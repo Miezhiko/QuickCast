@@ -116,16 +116,16 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
-  MUTEX_HANDLE = CreateMutexA(NULL, TRUE, MUTEX_NAME);
+  MUTEX_HANDLE = CreateMutexW(NULL, TRUE, MUTEX_NAME);
   if(ERROR_ALREADY_EXISTS == GetLastError()) {
     return 1;
   }
 
 #ifdef WITH_TRAY
-  FindResourceA(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), "ICON");
+  FindResourceW(hInstance, MAKEINTRESOURCE(IDR_ICO_MAIN), L"ICON");
 
   {
-    WNDCLASSEX wclx; 
+    WNDCLASSEXW wclx; 
     memset(&wclx, 0, sizeof(wclx));
     wclx.cbSize         = sizeof( wclx );
     wclx.style          = 0;
@@ -133,19 +133,19 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     wclx.cbClsExtra     = 0;
     wclx.cbWndExtra     = 0;
     wclx.hInstance      = hInstance;
-    wclx.hCursor        = LoadCursor( NULL, IDC_ARROW );
+    wclx.hCursor        = LoadCursorW( NULL, IDC_ARROW );
     wclx.hbrBackground  = (HBRUSH)( COLOR_BTNFACE + 1 );   
 
     wclx.lpszMenuName   = NULL;
     wclx.lpszClassName  = MUTEX_NAME;
 
-    RegisterClassEx( &wclx );
+    RegisterClassExW( &wclx );
   }
 
   {
-    WINDOW = CreateWindowExA(0, MUTEX_NAME, TEXT("Title"), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+    WINDOW = CreateWindowExW(0, MUTEX_NAME, TEXT("Title"), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
     if ( !WINDOW ) {
-      MessageBox(NULL, "Can't create window!", TEXT("Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
+      MessageBoxW(NULL, L"Can't create window!", TEXT("Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
       return 1;
     }
   }
@@ -168,7 +168,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
-  KEYBOARD_HOOK = SetWindowsHookExA( WH_KEYBOARD_LL
+  KEYBOARD_HOOK = SetWindowsHookExW( WH_KEYBOARD_LL
                                    , KeyboardCallback
                                    , NULL
                                    , 0 );
@@ -187,10 +187,10 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   BOOL bRet; 
   MSG msg;
-  while( ( bRet = GetMessageA(&msg, NULL, 0, 0) ) != 0 ) {
+  while( ( bRet = GetMessageW(&msg, NULL, 0, 0) ) != 0 ) {
     if (bRet != -1)  {
       TranslateMessage(&msg);
-      DispatchMessageA(&msg);
+      DispatchMessageW(&msg);
     }
   }
 

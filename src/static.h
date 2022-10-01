@@ -10,7 +10,7 @@
 #define EXIT_KEY            VK_BACK
 #define R_CLICK_KEY         VK_CAPITAL
 
-#define MUTEX_NAME          "QuickCast"
+#define MUTEX_NAME          L"QuickCast"
 
 #define ID_ABOUT            2000
 #define ID_EXIT             2001
