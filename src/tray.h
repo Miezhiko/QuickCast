@@ -10,8 +10,6 @@
 #define VERSION STRINGIFY_M(HASH_CMAKE)
 
 static BOOL MODAL_STATE     = FALSE;
-const WCHAR* ICON_PATH      = L"/resources/1.ico";
-
 static HWND WINDOW          = NULL;
 
 void RemoveTrayIcon( HWND hWnd, UINT uID ) {
@@ -49,7 +47,6 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   SendMessageW      ( hWnd, WM_INITMENUPOPUP, (WPARAM)hPop, 0 );
 
   {
-
     POINT pt;
     if (!curpos) {
       GetCursorPos( &pt );

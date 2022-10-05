@@ -62,14 +62,12 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
                                  , LPARAM lParam ) {
   if (uMsg == HC_ACTION) {
     switch(wParam) {
-      case WM_KEYDOWN: {
+      case WM_KEYDOWN:
         switch ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode )  {
           case VK_SNAPSHOT:
           case VK_LWIN:
           case VK_RWIN:
-          case VK_F9: // might crash games
             return 1;
-            break;
           case VK_CAPITAL:  // Caps Lock
             if (HOTKEYS_ON) {
               if (GetKeyState( VK_CONTROL ) & 0x8000) {
@@ -95,10 +93,9 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
           default: break;
         }
         break;
-      }
-      case WM_KEYUP: {
+      case WM_KEYUP:
         processHotkeys( ((KBDLLHOOKSTRUCT*)lParam)->vkCode );
-      } break;
+        break;
       default: break;
     }
   }
