@@ -5,6 +5,8 @@
 #include "utils.h"
 #include "input.h"
 
+static BOOL SILLY_WALK_LOCK = FALSE;
+
 VOID sillyWalkLOL(VOID) {
   if (SILLY_WALK_LOCK) return;
   else SILLY_WALK_LOCK = TRUE;

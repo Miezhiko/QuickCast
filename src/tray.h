@@ -47,10 +47,9 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   SendMessageW      ( hWnd, WM_INITMENUPOPUP, (WPARAM)hPop, 0 );
 
   {
-    POINT pt;
     if (!curpos) {
-      GetCursorPos( &pt );
-      curpos = &pt;
+      GetCursorPos( &CURSOR_POSITION );
+      curpos = &CURSOR_POSITION;
     }
 
     {
@@ -63,7 +62,7 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
     }
   }
 
-  DestroyMenu(hPop);
+  DestroyMenu( hPop );
   return 0;
 }
 
@@ -73,7 +72,7 @@ inline VOID DragonBox(HWND hWnd, LPCWSTR title, UINT flags) {
   WCHAR* dragon = malloc(MAX_PATH * sizeof(WCHAR));
   LoadStringW(GetModuleHandle(NULL), IDS_DRAGON, dragon, MAX_PATH);
   MessageBoxW( hWnd, dragon, title, flags );
-  free(dragon);
+  free( dragon );
 
   MODAL_STATE = FALSE;
 }
@@ -84,8 +83,8 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
       AddTrayIcon( hWnd, 1, WM_APP, 0 );
       return 0;
     case WM_CLOSE:
-      RemoveTrayIcon(hWnd, 1);
-      PostQuitMessage(0);
+      RemoveTrayIcon( hWnd, 1 );
+      PostQuitMessage( 0 );
 
       return DefWindowProcW( hWnd, uMsg, wParam, lParam );
 
@@ -93,7 +92,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
       switch (LOWORD(wParam)) {
         if ( MODAL_STATE ) { return 1; }
         case ID_ABOUT:
-          DragonBox(hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK);
+          DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
 
         case ID_EXIT:
@@ -106,12 +105,12 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_APP:
       switch (lParam) {
         case WM_LBUTTONDBLCLK:
-          DragonBox(hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK);
+          DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
 
         case WM_RBUTTONUP:
           SetForegroundWindow( hWnd );
-          ShowPopupMenu(hWnd, NULL, -1 );
+          ShowPopupMenu( hWnd, NULL, -1 );
           PostMessageW( hWnd, WM_APP + 1, 0, 0 );
           return 0;
       }

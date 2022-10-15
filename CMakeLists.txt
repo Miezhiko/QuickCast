@@ -7,6 +7,7 @@ project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
 option(WITH_TRAY "Display tray icon" TRUE)
+option(WITH_BORDERS_CHECK "Check ingame for clickable area" TRUE)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
@@ -28,6 +29,10 @@ if (WITH_TRAY)
   add_definitions(-DHASH_CMAKE=${GIT_COMMIT_HASH})
   add_definitions(-DWITH_TRAY=${WITH_TRAY})
 endif (WITH_TRAY)
+
+if (WITH_BORDERS_CHECK)
+  add_definitions(-DWITH_BORDERS_CHECK=${WITH_BORDERS_CHECK})
+endif (WITH_BORDERS_CHECK)
 
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE

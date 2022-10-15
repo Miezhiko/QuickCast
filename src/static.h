@@ -8,7 +8,6 @@
 
 #define TOGGLE_KEY          VK_SCROLL
 #define EXIT_KEY            VK_BACK
-#define R_CLICK_KEY         VK_CAPITAL
 
 #define MUTEX_NAME          L"QuickCast"
 
@@ -18,7 +17,6 @@
 #define IDR_ICO_MAIN        101
 #define IDS_DRAGON          102
 
-static BOOL BORDERS_CHECK   = TRUE;
 static BOOL CUSTOM_MACROS   = FALSE;
 
 static LONG MENU_HEIGHT     = 75;
@@ -45,5 +43,3 @@ static HHOOK KEYBOARD_HOOK;
 
 static POINT CURSOR_POSITION;
 static POINT STORED_CURSOR_POSITION;
-
-static BOOL SILLY_WALK_LOCK = FALSE;

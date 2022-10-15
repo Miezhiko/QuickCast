@@ -10,8 +10,9 @@
 #include "tray.h"     // tray icon (optional)
 #endif
 
+#ifdef WITH_BORDERS_CHECK
 inline VOID bordersCheck(VOID) {
-  if (BORDERS_CHECK && GetCursorPos(&CURSOR_POSITION)) {
+  if (GetCursorPos(&CURSOR_POSITION)) {
     if (CURSOR_POSITION.y < MENU_HEIGHT) {
       SetCursorPos(CURSOR_POSITION.x, MENU_HEIGHT);
     } else if (CURSOR_POSITION.y > GAME_HEIGHT
@@ -21,6 +22,7 @@ inline VOID bordersCheck(VOID) {
     }
   }
 }
+#endif
 
 inline VOID processHotkeys(DWORD code) {
   switch (code) {
@@ -45,7 +47,9 @@ inline VOID processHotkeys(DWORD code) {
            ; CONFIG_KEYS_ITERATOR < CONFIG_KEYS_SIZE
            ; ++CONFIG_KEYS_ITERATOR ) {
           if (code == CONFIG_KEYS[CONFIG_KEYS_ITERATOR]) {
+            #ifdef WITH_BORDERS_CHECK
             bordersCheck();
+            #endif
             mouseLeftClick();
             if (CUSTOM_MACROS) {
               STORED_CURSOR_POSITION = CURSOR_POSITION;
