@@ -4,7 +4,7 @@
 #include <shellapi.h>
 #include <winuser.h>
 
-#define STRINGIFY(x) L#x
+#define STRINGIFY(x) L""#x
 #define STRINGIFY_M(x) STRINGIFY(x)
 
 #define VERSION STRINGIFY_M(HASH_CMAKE)
