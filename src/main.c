@@ -43,19 +43,15 @@ inline VOID processHotkeys(DWORD code) {
       return;
     default:
       if (HOTKEYS_ON) {
-        for( CONFIG_KEYS_ITERATOR = 0
-           ; CONFIG_KEYS_ITERATOR < CONFIG_KEYS_SIZE
-           ; ++CONFIG_KEYS_ITERATOR ) {
-          if (code == CONFIG_KEYS[CONFIG_KEYS_ITERATOR]) {
-            #ifdef WITH_BORDERS_CHECK
-            bordersCheck();
-            #endif
-            mouseLeftClick();
-            if (CUSTOM_MACROS) {
-              STORED_CURSOR_POSITION = CURSOR_POSITION;
-            }
-            return;
+        if ((CONFIG_KEYS % code) == 0) {
+          #ifdef WITH_BORDERS_CHECK
+          bordersCheck();
+          #endif
+          mouseLeftClick();
+          if (CUSTOM_MACROS) {
+            STORED_CURSOR_POSITION = CURSOR_POSITION;
           }
+          return;
         }
       }
   }
@@ -196,7 +192,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   }
 
   UnhookWindowsHookEx(KEYBOARD_HOOK);
-  free(CONFIG_KEYS);
 
   // Turn off Scroll Lock
   if (GetKeyState(TOGGLE_KEY) & 0x0001) {

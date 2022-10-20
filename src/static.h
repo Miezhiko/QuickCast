@@ -27,9 +27,7 @@ static LONG GAME_MID_WIDTH2 = 2150;
 static BOOL HOTKEYS_ON      = TRUE;
 const INT SIZE_OF_INPUT     = sizeof(INPUT);
 
-DWORD *CONFIG_KEYS          = NULL;
-INT CONFIG_KEYS_SIZE        = 0;
-INT CONFIG_KEYS_ITERATOR    = 0;
+static INT64 CONFIG_KEYS    = 1;
 
 static HANDLE MUTEX_HANDLE  = 0;
 

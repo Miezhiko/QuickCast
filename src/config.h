@@ -18,27 +18,12 @@ inline VOID parseConfigFile(VOID) {
   WCHAR *keys = malloc(INI_FILE_MAX * sizeof(WCHAR));
   GetPrivateProfileSectionW(KEYS_SECTION, keys, INI_FILE_MAX, CONF_FILE);
 
-  // calculate array lenght
-  WCHAR *current;
-  for(current = keys; *current; ++current) {
-    CONFIG_KEYS_SIZE += *current == L'\n';
-  }
-
-  CONFIG_KEYS       = malloc(CONFIG_KEYS_SIZE * sizeof(DWORD));
-  CONFIG_KEYS_SIZE  = 0;
-
-  len     = 0;
-  current = keys;
-
-  // fill config keys array
-  while (*current) {
+  for(WCHAR *current = keys; *current; current += len + 1) {
     len         = wcslen(current);
     currentStr  = wcstok_s(current, L"=", &context);
     valueStr    = (currentStr + wcslen(currentStr) + 1);
     value       = wcstoul(valueStr, NULL, 16);
-    CONFIG_KEYS[CONFIG_KEYS_SIZE] = value;
-    ++CONFIG_KEYS_SIZE;
-    current += len + 1;
+    if (value) CONFIG_KEYS *= value;
   }
 
 #ifdef WITH_BORDERS_CHECK
