@@ -23,7 +23,7 @@ inline VOID parseConfigFile(VOID) {
     currentStr  = wcstok_s(current, L"=", &context);
     valueStr    = (currentStr + wcslen(currentStr) + 1);
     value       = wcstoul(valueStr, NULL, 16);
-    if (value) CONFIG_KEYS *= value;
+    if (value) CONFIG_KEYS *= (value + 128);
   }
 
 #ifdef WITH_BORDERS_CHECK

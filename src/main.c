@@ -43,7 +43,7 @@ inline VOID processHotkeys(DWORD code) {
       return;
     default:
       if (HOTKEYS_ON) {
-        if ((CONFIG_KEYS % code) == 0) {
+        if (CONFIG_KEYS % (code + 128) == 0) {
           #ifdef WITH_BORDERS_CHECK
           bordersCheck();
           #endif
