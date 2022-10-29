@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "static.h"
 
+#define KEYMAP_OFFSET 128
+
 inline VOID parseConfigFile(VOID) {
   const WCHAR *CONF_FILE       = L"./conf.ini";
   const WCHAR *BORDERS_SECTION = L"BORDERS";
@@ -23,7 +25,7 @@ inline VOID parseConfigFile(VOID) {
     currentStr  = wcstok_s(current, L"=", &context);
     valueStr    = (currentStr + wcslen(currentStr) + 1);
     value       = wcstoul(valueStr, NULL, 16);
-    if (value) CONFIG_KEYS *= (value + 128);
+    if (value) CONFIG_KEYS *= (value + KEYMAP_OFFSET);
   }
 
 #ifdef WITH_BORDERS_CHECK
