@@ -5,10 +5,7 @@
 #include "input.h"    // basic input functions
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
-
-#ifdef WITH_TRAY
 #include "tray.h"     // tray icon (optional)
-#endif
 
 #ifdef WITH_BORDERS_CHECK
 inline VOID bordersCheck(VOID) {
@@ -24,22 +21,18 @@ inline VOID bordersCheck(VOID) {
 }
 #endif
 
-inline VOID processHotkeys(DWORD code) {
-  switch (code) {
+inline VOID processKeyupHotkeys(DWORD code) {
+  switch ( code ) {
     case TOGGLE_KEY:
       HOTKEYS_ON = !HOTKEYS_ON;
       return;
     case EXIT_KEY:
       if (GetKeyState( VK_CONTROL ) & 0x8000)
-        #ifdef WITH_TRAY
         if (WINDOW) {
           PostMessage( WINDOW, WM_CLOSE, 0, 0 );
         } else {
           PostQuitMessage(0);
         }
-        #else
-        PostQuitMessage(0);
-        #endif
       return;
     default:
       if (HOTKEYS_ON) {
@@ -51,9 +44,9 @@ inline VOID processHotkeys(DWORD code) {
           if (CUSTOM_MACROS) {
             STORED_CURSOR_POSITION = CURSOR_POSITION;
           }
-          return;
         }
       }
+    return;
   }
 }
 
@@ -64,20 +57,20 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
     switch(wParam) {
       case WM_KEYDOWN:
         switch ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode )  {
-          case VK_SNAPSHOT:
           case VK_LWIN:
           case VK_RWIN:
             return 1;
-          case VK_CAPITAL:  // Caps Lock
+          case VK_SNAPSHOT:
+            if (HOTKEYS_ON) return 1;
+          case VK_CAPITAL:
             if (HOTKEYS_ON) {
               if (GetKeyState( VK_CONTROL ) & 0x8000) {
                 CUSTOM_MACROS = !CUSTOM_MACROS;
               } else if (CUSTOM_MACROS) {
                 sillyWalkLOL();
               }
-              return 1;
             }
-            break;
+            return 1;
           case VK_OEM_4:    // [
             if (HOTKEYS_ON && CUSTOM_MACROS) {
               backAndForwardVertical();
@@ -94,8 +87,9 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
         }
         break;
       case WM_KEYUP:
-        processHotkeys( ((KBDLLHOOKSTRUCT*)lParam)->vkCode );
-        break;
+        processKeyupHotkeys(
+          ((KBDLLHOOKSTRUCT*)lParam)->vkCode
+        ); break;
       default: break;
     }
   }
@@ -118,7 +112,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     return 1;
   }
 
-#ifdef WITH_TRAY
   FindResourceW(hInstance, MAKEINTRESOURCEW(IDR_ICO_MAIN), L"ICON");
 
   {
@@ -140,13 +133,14 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   }
 
   {
-    WINDOW = CreateWindowExW(0, MUTEX_NAME, TEXT(L"Title"), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+    WINDOW = CreateWindowExW( 0, MUTEX_NAME
+                            , TEXT(L"Title"), WS_OVERLAPPEDWINDOW
+                            , 0, 0, 0, 0, NULL, NULL, hInstance, NULL );
     if ( !WINDOW ) {
       MessageBoxW(NULL, L"Can't create window!", TEXT(L"Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
       return 1;
     }
   }
-#endif
 
   // using sleep with lower than 1ms timeouts
   // weird shit that can turn your process into zombie
@@ -165,11 +159,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
-  KEYBOARD_HOOK = SetWindowsHookExW( WH_KEYBOARD_LL
-                                   , KeyboardCallback
-                                   , NULL
-                                   , 0 );
-
   INPUT_DOWN.type             = INPUT_UP.type           = INPUT_MOUSE;
   INPUT_DOWN.mi.dwExtraInfo   = INPUT_UP.mi.dwExtraInfo = 0;
 
@@ -181,6 +170,11 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   INPUT_DOWN_R.mi.dwFlags     = MOUSEEVENTF_RIGHTDOWN;
   INPUT_UP_R.mi.dwFlags       = MOUSEEVENTF_RIGHTUP;
+
+  KEYBOARD_HOOK = SetWindowsHookExW( WH_KEYBOARD_LL
+                                   , KeyboardCallback
+                                   , NULL
+                                   , 0 );
 
   BOOL bRet; 
   MSG msg;

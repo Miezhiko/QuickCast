@@ -6,7 +6,6 @@ set(CMAKE_C_FLAGS_RELEASE "/Oi /Ot /Oy /O2 /GL /Qpar /WX /TC /std:c17")
 project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
-option(WITH_TRAY "Display tray icon" TRUE)
 option(WITH_BORDERS_CHECK "Check ingame for clickable area" TRUE)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
@@ -20,15 +19,12 @@ add_executable (${CMAKE_PROJECT_NAME}
 
 add_definitions(-DSOURCE_DIR=${CMAKE_SOURCE_DIR})
 
-if (WITH_TRAY)
-  execute_process(
-    COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_COMMIT_HASH
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  add_definitions(-DHASH_CMAKE=${GIT_COMMIT_HASH})
-  add_definitions(-DWITH_TRAY=${WITH_TRAY})
-endif (WITH_TRAY)
+execute_process(
+  COMMAND git rev-parse --short HEAD
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_COMMIT_HASH
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+add_definitions(-DHASH_CMAKE=${GIT_COMMIT_HASH})
 
 if (WITH_BORDERS_CHECK)
   add_definitions(-DWITH_BORDERS_CHECK=${WITH_BORDERS_CHECK})

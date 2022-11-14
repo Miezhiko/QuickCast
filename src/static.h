@@ -17,6 +17,8 @@
 #define IDR_ICO_MAIN        101
 #define IDS_DRAGON          102
 
+#define KEYMAP_OFFSET       128
+
 static BOOL CUSTOM_MACROS   = FALSE;
 
 static LONG MENU_HEIGHT     = 75;

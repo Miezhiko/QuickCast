@@ -3,8 +3,6 @@
 #include "stdafx.h"
 #include "static.h"
 
-#define KEYMAP_OFFSET 128
-
 inline VOID parseConfigFile(VOID) {
   const WCHAR *CONF_FILE       = L"./conf.ini";
   const WCHAR *BORDERS_SECTION = L"BORDERS";
