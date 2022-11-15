@@ -62,6 +62,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
             return 1;
           case VK_SNAPSHOT:
             if (HOTKEYS_ON) return 1;
+            else break;
           case VK_CAPITAL:
             if (HOTKEYS_ON) {
               if (GetKeyState( VK_CONTROL ) & 0x8000) {
