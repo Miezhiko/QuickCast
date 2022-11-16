@@ -7,92 +7,77 @@
 #include "memes.h"    // funny macros
 #include "tray.h"     // tray icon (optional)
 
-#ifdef WITH_BORDERS_CHECK
-inline VOID bordersCheck(VOID) {
-  if (GetCursorPos(&CURSOR_POSITION)) {
-    if (CURSOR_POSITION.y < MENU_HEIGHT) {
+inline VOID doClick(VOID) {
+  #ifdef WITH_BORDERS_CHECK
+  if (GetCursorPos(&CURSOR_POSITION))
+    if (CURSOR_POSITION.y < MENU_HEIGHT)
       SetCursorPos(CURSOR_POSITION.x, MENU_HEIGHT);
-    } else if (CURSOR_POSITION.y > GAME_HEIGHT
-            && CURSOR_POSITION.x > GAME_MID_WIDTH
-            && CURSOR_POSITION.x < GAME_MID_WIDTH2) {
+    else if (CURSOR_POSITION.y > GAME_HEIGHT
+          && CURSOR_POSITION.x > GAME_MID_WIDTH
+          && CURSOR_POSITION.x < GAME_MID_WIDTH2)
       SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
-    }
-  }
+  #endif
+  mouseLeftClick();
+  if (CUSTOM_MACROS) STORED_CURSOR_POSITION = CURSOR_POSITION;
 }
-#endif
 
 inline VOID processKeyupHotkeys(DWORD code) {
-  switch ( code ) {
+  switch (code) {
     case TOGGLE_KEY:
       HOTKEYS_ON = !HOTKEYS_ON;
       return;
     case EXIT_KEY:
       if (GetKeyState( VK_CONTROL ) & 0x8000)
-        if (WINDOW) {
+        if (WINDOW)
           PostMessage( WINDOW, WM_CLOSE, 0, 0 );
-        } else {
-          PostQuitMessage(0);
-        }
+        else PostQuitMessage(0);
       return;
     default:
-      if (HOTKEYS_ON) {
-        if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
-          #ifdef WITH_BORDERS_CHECK
-          bordersCheck();
-          #endif
-          mouseLeftClick();
-          if (CUSTOM_MACROS) {
-            STORED_CURSOR_POSITION = CURSOR_POSITION;
-          }
-        }
-      }
-    return;
+      if (HOTKEYS_ON && (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0))
+        doClick();
+      return;
   }
 }
 
 LRESULT CALLBACK KeyboardCallback( INT uMsg
                                  , WPARAM wParam
                                  , LPARAM lParam ) {
-  if (uMsg == HC_ACTION) {
-    switch(wParam) {
-      case WM_KEYDOWN:
-        switch ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode )  {
-          case VK_LWIN:
-          case VK_RWIN:
+  if (uMsg == HC_ACTION) switch(wParam) {
+    case WM_KEYDOWN:
+      switch ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode )  {
+        case VK_LWIN:
+        case VK_RWIN:
+          return 1;
+        case VK_SNAPSHOT:
+          if (HOTKEYS_ON) return 1;
+          else break;
+        case VK_CAPITAL:
+          if (HOTKEYS_ON)
+            if (GetKeyState( VK_CONTROL ) & 0x8000) {
+              if (GetCursorPos(&CURSOR_POSITION))
+                STORED_CURSOR_POSITION = CURSOR_POSITION;
+              CUSTOM_MACROS = !CUSTOM_MACROS;
+            } else if (CUSTOM_MACROS)
+              sillyWalkLOL();
+          return 1;
+        case VK_OEM_4:    // [
+          if (HOTKEYS_ON && CUSTOM_MACROS) {
+            backAndForwardVertical();
             return 1;
-          case VK_SNAPSHOT:
-            if (HOTKEYS_ON) return 1;
-            else break;
-          case VK_CAPITAL:
-            if (HOTKEYS_ON) {
-              if (GetKeyState( VK_CONTROL ) & 0x8000) {
-                CUSTOM_MACROS = !CUSTOM_MACROS;
-              } else if (CUSTOM_MACROS) {
-                sillyWalkLOL();
-              }
-            }
+          } else break;
+        case VK_OEM_6:    // ]
+          if (HOTKEYS_ON && CUSTOM_MACROS) {
+            backAndForwardHorizontal();
             return 1;
-          case VK_OEM_4:    // [
-            if (HOTKEYS_ON && CUSTOM_MACROS) {
-              backAndForwardVertical();
-              return 1;
-            }
-            break;
-          case VK_OEM_6:    // ]
-            if (HOTKEYS_ON && CUSTOM_MACROS) {
-              backAndForwardHorizontal();
-              return 1;
-            }
-            break;
-          default: break;
-        }
-        break;
-      case WM_KEYUP:
-        processKeyupHotkeys(
-          ((KBDLLHOOKSTRUCT*)lParam)->vkCode
-        ); break;
-      default: break;
-    }
+          } else break;
+        default: break;
+      }
+      break;
+    case WM_KEYUP:
+      processKeyupHotkeys(
+        ((KBDLLHOOKSTRUCT*)lParam)->vkCode
+      ); break;
+    default: break;
   }
   return CallNextHookEx(KEYBOARD_HOOK, uMsg, wParam, lParam);
 }
@@ -109,9 +94,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   }
 
   MUTEX_HANDLE = CreateMutexW(NULL, TRUE, MUTEX_NAME);
-  if(ERROR_ALREADY_EXISTS == GetLastError()) {
-    return 1;
-  }
+  if(ERROR_ALREADY_EXISTS == GetLastError()) return 1;
 
   FindResourceW(hInstance, MAKEINTRESOURCEW(IDR_ICO_MAIN), L"ICON");
 
@@ -149,11 +132,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   parseConfigFile();
 
-  // init stored cursor position
-  if (CUSTOM_MACROS) {
-    STORED_CURSOR_POSITION.x = 0;
-  }
-
   // Turn on Scroll Lock
   if (!(GetKeyState(TOGGLE_KEY) & 0x0001)) {
     keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
@@ -179,12 +157,11 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   BOOL bRet; 
   MSG msg;
-  while( ( bRet = GetMessageW(&msg, NULL, 0, 0) ) != 0 ) {
+  while( ( bRet = GetMessageW(&msg, NULL, 0, 0) ) != 0 )
     if (bRet != -1)  {
       TranslateMessage(&msg);
       DispatchMessageW(&msg);
     }
-  }
 
   UnhookWindowsHookEx(KEYBOARD_HOOK);
 

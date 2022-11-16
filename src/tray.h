@@ -37,7 +37,7 @@ void AddTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
 
 BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   HMENU hPop = CreatePopupMenu();
-  if ( MODAL_STATE ) { return FALSE; }
+  if ( MODAL_STATE ) return FALSE;
 
   InsertMenuW( hPop, 0, MF_BYPOSITION | MF_STRING, ID_ABOUT, L"About..." );
   InsertMenuW( hPop, 1, MF_BYPOSITION | MF_STRING, ID_EXIT , L"Exit" );
@@ -90,7 +90,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_COMMAND:
       switch (LOWORD(wParam)) {
-        if ( MODAL_STATE ) { return 1; }
+        if ( MODAL_STATE ) return 1;
         case ID_ABOUT:
           DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;

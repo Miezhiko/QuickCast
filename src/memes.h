@@ -52,10 +52,9 @@ VOID sillyWalkLOL(VOID) {
         y3i = yi + SILLY_WALK_STEP2 * dyCurrent;
         SetCursorPos( (INT) floorf( x3i )
                     , (INT) floorf( y3i ) );
-      } else {
+      } else
         SetCursorPos( (INT) floorf( xi )
                     , (INT) floorf( yi ) );
-      }
       sleep(-2000);
       mouseRightClick();
     }
