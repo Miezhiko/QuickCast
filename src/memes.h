@@ -15,19 +15,13 @@ VOID sillyWalkLOL(VOID) {
     const LONG old_x = STORED_CURSOR_POSITION.x;
     const LONG old_y = STORED_CURSOR_POSITION.y;
     STORED_CURSOR_POSITION = CURSOR_POSITION;
-    if (old_x == 0) {
-      SILLY_WALK_LOCK = FALSE;
-      return;
-    }
+    if (old_x == 0) goto sillyWalkEnd;
 
     const LONG xDiff    = CURSOR_POSITION.x - old_x;
     const LONG yDiff    = CURSOR_POSITION.y - old_y;
     const FLOAT len     = sqrtf( pow(xDiff,2) + pow(yDiff,2) );
     const UINT32 steps  = (UINT32) floorf( len / SILLY_WALK_STEP );
-    if (len == 0) {
-      SILLY_WALK_LOCK = FALSE;
-      return;
-    }
+    if (len == 0) goto sillyWalkEnd;
 
     const FLOAT dx      = xDiff / len;
     const FLOAT dy      = yDiff / len;
@@ -41,10 +35,7 @@ VOID sillyWalkLOL(VOID) {
         const FLOAT xCurrentDiff  = x3i - xi;
         const FLOAT yCurrentDiff  = y3i - yi;
         const FLOAT dist          = sqrtf( pow(xCurrentDiff,2) + pow(yCurrentDiff,2) );
-        if (dist == 0) {
-          SILLY_WALK_LOCK = FALSE;
-          return;
-        }
+        if (dist == 0) goto sillyWalkEnd;
 
         const FLOAT dxCurrent = xCurrentDiff / dist;
         const FLOAT dyCurrent = yCurrentDiff / dist;
@@ -60,6 +51,7 @@ VOID sillyWalkLOL(VOID) {
     }
     shift_up();
   }
+  sillyWalkEnd:
   SILLY_WALK_LOCK = FALSE;
 }
 

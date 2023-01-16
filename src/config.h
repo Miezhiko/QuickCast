@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "static.h"
 
-inline VOID parseConfigFile(VOID) {
+VOID parseConfigFile(VOID) {
   const WCHAR *CONF_FILE       = L"./conf.ini";
   const WCHAR *BORDERS_SECTION = L"BORDERS";
   const WCHAR *KEYS_SECTION    = L"QUICKCAST";
