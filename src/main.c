@@ -93,6 +93,12 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
+  // Turn off Caps Lock (just to be sure we don't have it)
+  if (GetKeyState(VK_CAPITAL) & 0x0001) {
+    keybd_event(VK_CAPITAL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+    keybd_event(VK_CAPITAL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+  }
+
   MUTEX_HANDLE = CreateMutexW(NULL, TRUE, MUTEX_NAME);
   if(ERROR_ALREADY_EXISTS == GetLastError()) return 1;
 
@@ -122,7 +128,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
                             , 0, 0, 0, 0, NULL, NULL, hInstance, NULL );
     if ( !WINDOW ) {
       MessageBoxW(NULL, L"Can't create window!", TEXT(L"Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
-      return 1;
+      goto mainExit;
     }
   }
 
@@ -171,6 +177,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
+  mainExit:
   if (MUTEX_HANDLE) {
     CloseHandle(MUTEX_HANDLE);
     ReleaseMutex(MUTEX_HANDLE);

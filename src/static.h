@@ -21,10 +21,12 @@
 
 static BOOL CUSTOM_MACROS   = FALSE;
 
+#ifdef WITH_BORDERS_CHECK
 static LONG MENU_HEIGHT     = 75;
 static LONG GAME_HEIGHT     = 1000;
 static LONG GAME_MID_WIDTH  = 1740;
 static LONG GAME_MID_WIDTH2 = 2150;
+#endif
 
 static BOOL HOTKEYS_ON      = TRUE;
 const INT SIZE_OF_INPUT     = sizeof(INPUT);

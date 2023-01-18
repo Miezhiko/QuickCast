@@ -5,7 +5,9 @@
 
 VOID parseConfigFile(VOID) {
   const WCHAR *CONF_FILE       = L"./conf.ini";
+#ifdef WITH_BORDERS_CHECK
   const WCHAR *BORDERS_SECTION = L"BORDERS";
+#endif
   const WCHAR *KEYS_SECTION    = L"QUICKCAST";
 
   DWORD value       = 0;
