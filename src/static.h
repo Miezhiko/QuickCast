@@ -6,8 +6,12 @@
 #define SILLY_WALK_STEP     10
 #define SILLY_WALK_STEP2    50
 
+#define WC3_SLEEP_TIMEOUT   -2000
+
 #define TOGGLE_KEY          VK_SCROLL
 #define EXIT_KEY            VK_BACK
+#define MOVE_KEY            0x5A
+#define STOP_MOVE_KEY       0x41
 
 #define MUTEX_NAME          L"QuickCast"
 
@@ -29,6 +33,7 @@ static LONG GAME_MID_WIDTH2 = 2150;
 #endif
 
 static BOOL HOTKEYS_ON      = TRUE;
+static BOOL BLOCK_CLICKS_ON = FALSE;
 const INT SIZE_OF_INPUT     = sizeof(INPUT);
 
 static INT64 CONFIG_KEYS    = 1;

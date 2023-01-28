@@ -46,8 +46,8 @@ VOID sillyWalkLOL(VOID) {
       } else
         SetCursorPos( (INT) floorf( xi )
                     , (INT) floorf( yi ) );
-      sleep(-2000);
-      mouseRightClick();
+      WC3_SLEEP
+      MOUSE_RIGHT_CLICK
     }
     shift_up();
   }
@@ -60,9 +60,9 @@ VOID backAndForwardVertical(VOID) {
     shift_down();
     for (INT YEE = 0; YEE < 100; ++YEE) {
       SetCursorPos(CURSOR_POSITION.x, CURSOR_POSITION.y - 25);
-      mouseRightClick();
+      MOUSE_RIGHT_CLICK
       SetCursorPos(CURSOR_POSITION.x, CURSOR_POSITION.y + 25);
-      mouseRightClick();
+      MOUSE_RIGHT_CLICK
     }
     shift_up();
   }
@@ -73,9 +73,9 @@ VOID backAndForwardHorizontal(VOID) {
     shift_down();
     for (INT YEE = 0; YEE < 100; ++YEE) {
       SetCursorPos(CURSOR_POSITION.x - 25, CURSOR_POSITION.y);
-      mouseRightClick();
+      MOUSE_RIGHT_CLICK
       SetCursorPos(CURSOR_POSITION.x + 25, CURSOR_POSITION.y);
-      mouseRightClick();
+      MOUSE_RIGHT_CLICK
     }
     shift_up();
   }

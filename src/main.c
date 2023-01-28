@@ -5,6 +5,7 @@
 #include "input.h"    // basic input functions
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
+#include "utils.h"    // for sleep
 #include "tray.h"     // tray icon (optional)
 
 inline VOID doClick(VOID) {
@@ -17,8 +18,33 @@ inline VOID doClick(VOID) {
           && CURSOR_POSITION.x < GAME_MID_WIDTH2)
       SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
   #endif
-  mouseLeftClick();
+  MOUSE_LEFT_CLICK
   if (CUSTOM_MACROS) STORED_CURSOR_POSITION = CURSOR_POSITION;
+}
+
+VOID goMoveSurround(VOID) {
+  if (BLOCK_CLICKS_ON) return;
+  BLOCK_CLICKS_ON = TRUE;
+  while (BLOCK_CLICKS_ON) {
+    keyPress(MOVE_KEY);
+    #ifdef WITH_BORDERS_CHECK
+    if (GetCursorPos(&CURSOR_POSITION))
+      if (CURSOR_POSITION.y < MENU_HEIGHT)
+        SetCursorPos(CURSOR_POSITION.x, MENU_HEIGHT);
+      else if (CURSOR_POSITION.y > GAME_HEIGHT
+            && CURSOR_POSITION.x > GAME_MID_WIDTH
+            && CURSOR_POSITION.x < GAME_MID_WIDTH2)
+        SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
+    #endif
+    MOUSE_LEFT_CLICK
+    WC3_SLEEP
+    if (GetAsyncKeyState(STOP_MOVE_KEY)
+     || GetAsyncKeyState(0x53) // S
+     || GetAsyncKeyState(0x58) // X
+       ) {
+      BLOCK_CLICKS_ON = FALSE;
+    }
+  }
 }
 
 inline VOID processKeyupHotkeys(DWORD code) {
@@ -33,8 +59,10 @@ inline VOID processKeyupHotkeys(DWORD code) {
         else PostQuitMessage(0);
       return;
     default:
-      if (HOTKEYS_ON && (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0))
-        doClick();
+      if ( HOTKEYS_ON
+       && (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0)
+       && !BLOCK_CLICKS_ON
+         ) doClick();
       return;
   }
 }
@@ -51,6 +79,11 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
         case VK_SNAPSHOT:
           if (HOTKEYS_ON) return 1;
           else break;
+        case VK_F5:
+          if (HOTKEYS_ON) {
+            goMoveSurround();
+            return 1;
+          } else break;
         case VK_CAPITAL:
           if (HOTKEYS_ON)
             if (GetKeyState( VK_CONTROL ) & 0x8000) {
