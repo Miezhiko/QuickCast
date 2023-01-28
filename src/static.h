@@ -11,7 +11,7 @@
 #define TOGGLE_KEY          VK_SCROLL
 #define EXIT_KEY            VK_BACK
 #define MOVE_KEY            0x5A
-#define STOP_MOVE_KEY       0x41
+#define STOP_MOVE_KEY       0x53
 
 #define MUTEX_NAME          L"QuickCast"
 

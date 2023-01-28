@@ -38,12 +38,8 @@ VOID goMoveSurround(VOID) {
     #endif
     MOUSE_LEFT_CLICK
     WC3_SLEEP
-    if (GetAsyncKeyState(STOP_MOVE_KEY)
-     || GetAsyncKeyState(0x53) // S
-     || GetAsyncKeyState(0x58) // X
-       ) {
+    if (GetAsyncKeyState(STOP_MOVE_KEY))
       BLOCK_CLICKS_ON = FALSE;
-    }
   }
 }
 
