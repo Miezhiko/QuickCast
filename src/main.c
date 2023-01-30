@@ -75,7 +75,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
         case VK_SNAPSHOT:
           if (HOTKEYS_ON) return 1;
           else break;
-        case VK_F5:
+        case VK_F6:
           if (HOTKEYS_ON) {
             goMoveSurround();
             return 1;
