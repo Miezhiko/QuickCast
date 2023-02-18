@@ -48,6 +48,11 @@ inline VOID processKeyupHotkeys(DWORD code) {
   switch (code) {
     case TOGGLE_KEY:
       HOTKEYS_ON = !HOTKEYS_ON;
+      if (WARCRAFT3PID == 0 && HOTKEYS_ON) {
+        GetWarcraft3PID();
+        if (WARCRAFT3PID)
+          SetWC3PriorityToHigh();
+      }
       return;
     case EXIT_KEY:
       if (GetKeyState( VK_CONTROL ) & 0x8000)
@@ -152,6 +157,8 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     RegisterClassExW( &wclx );
   }
 
+  GetWarcraft3PID();
+
   {
     WINDOW = CreateWindowExW( 0, MUTEX_NAME
                             , TEXT(L"Title"), WS_OVERLAPPEDWINDOW
@@ -163,7 +170,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
       goto mainExit;
     }
 
-    if (!SetWC3PriorityToHigh()) {
+    if (WARCRAFT3PID && !SetWC3PriorityToHigh()) {
       MessageBoxW(NULL, L"Run WC3 before QuickCast!", TEXT(L"Warning!"), MB_ICONERROR
                                                                        | MB_OK
                                                                        | MB_TOPMOST);
@@ -176,11 +183,13 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   parseConfigFile();
 
-  // Turn on Scroll Lock
-  if (!(GetKeyState(TOGGLE_KEY) & 0x0001)) {
-    keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-    keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-  }
+  // Turn on Scroll Lock if Warcraft3 is running
+  if (WARCRAFT3PID)
+    if (!(GetKeyState(TOGGLE_KEY) & 0x0001)) {
+      keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+      keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+    }
+  else HOTKEYS_ON = FALSE;
 
   INPUT_DOWN.type             = INPUT_UP.type           = INPUT_MOUSE;
   INPUT_DOWN.mi.dwExtraInfo   = INPUT_UP.mi.dwExtraInfo = 0;
