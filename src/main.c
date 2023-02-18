@@ -184,12 +184,12 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   parseConfigFile();
 
   // Turn on Scroll Lock if Warcraft3 is running
-  if (WARCRAFT3PID)
+  if (WARCRAFT3PID) {
     if (!(GetKeyState(TOGGLE_KEY) & 0x0001)) {
       keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
       keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
     }
-  else HOTKEYS_ON = FALSE;
+  } else HOTKEYS_ON = FALSE;
 
   INPUT_DOWN.type             = INPUT_UP.type           = INPUT_MOUSE;
   INPUT_DOWN.mi.dwExtraInfo   = INPUT_UP.mi.dwExtraInfo = 0;
