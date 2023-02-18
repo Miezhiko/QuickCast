@@ -7,6 +7,7 @@
 #include "memes.h"    // funny macros
 #include "utils.h"    // for sleep
 #include "tray.h"     // tray icon (optional)
+#include "process.h"  // WC3 process stuff
 
 inline VOID doClick(VOID) {
   #ifdef WITH_BORDERS_CHECK
@@ -156,8 +157,16 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
                             , TEXT(L"Title"), WS_OVERLAPPEDWINDOW
                             , 0, 0, 0, 0, NULL, NULL, hInstance, NULL );
     if ( !WINDOW ) {
-      MessageBoxW(NULL, L"Can't create window!", TEXT(L"Warning!"), MB_ICONERROR | MB_OK | MB_TOPMOST);
+      MessageBoxW(NULL, L"Can't create window!", TEXT(L"Warning!"), MB_ICONERROR
+                                                                  | MB_OK
+                                                                  | MB_TOPMOST);
       goto mainExit;
+    }
+
+    if (!SetWC3PriorityToHigh()) {
+      MessageBoxW(NULL, L"Run WC3 before QuickCast!", TEXT(L"Warning!"), MB_ICONERROR
+                                                                       | MB_OK
+                                                                       | MB_TOPMOST);
     }
   }
 

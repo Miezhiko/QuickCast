@@ -96,7 +96,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
           return 0;
 
         case ID_EXIT:
-          PostMessageA( hWnd, WM_CLOSE, 0, 0 );
+          PostMessageW( hWnd, WM_CLOSE, 0, 0 );
           return 0;
       }
 

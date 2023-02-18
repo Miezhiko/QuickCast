@@ -25,6 +25,8 @@
 
 static BOOL CUSTOM_MACROS   = FALSE;
 
+const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
+
 #ifdef WITH_BORDERS_CHECK
 static LONG MENU_HEIGHT     = 75;
 static LONG GAME_HEIGHT     = 1000;
