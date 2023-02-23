@@ -1,4 +1,7 @@
+#pragma once
+
 #include "stdafx.h"
+#include "process.h"
 
 #include <shellapi.h>
 #include <winuser.h>
@@ -8,10 +11,13 @@
 
 #define VERSION STRINGIFY_M(HASH_CMAKE)
 
+static HANDLE MUTEX_HANDLE  = 0;
+
 #define MUTEX_NAME          L"QuickCast"
 
 #define ID_ABOUT            2000
-#define ID_EXIT             2001
+#define ID_INJECT           2001
+#define ID_EXIT             2002
 
 #define IDR_ICO_MAIN        101
 #define IDS_DRAGON          102
@@ -48,8 +54,9 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   HMENU hPop = CreatePopupMenu();
   if ( MODAL_STATE ) return FALSE;
 
-  InsertMenuW( hPop, 0, MF_BYPOSITION | MF_STRING, ID_ABOUT, L"About..." );
-  InsertMenuW( hPop, 1, MF_BYPOSITION | MF_STRING, ID_EXIT , L"Exit" );
+  InsertMenuW( hPop, 0, MF_BYPOSITION | MF_STRING, ID_ABOUT,  L"About" );
+  InsertMenuW( hPop, 1, MF_BYPOSITION | MF_STRING, ID_INJECT, L"Inject" );
+  InsertMenuW( hPop, 2, MF_BYPOSITION | MF_STRING, ID_EXIT,   L"Exit" );
 
   SetMenuDefaultItem( hPop, ID_ABOUT, FALSE );
   SetFocus          ( hWnd );
@@ -102,6 +109,20 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         if ( MODAL_STATE ) return 1;
         case ID_ABOUT:
           DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
+          return 0;
+
+        case ID_INJECT:
+          GetWarcraft3PID();
+          if (WARCRAFT3PID) {
+            SetWC3PriorityToHigh();
+          }
+          if (WARCRAFT3PID && !Inject()) {
+            MessageBoxW(NULL, L"Failed to inject DLL!", L"Error!", MB_ICONERROR
+                                                                 | MB_OK
+                                                                 | MB_TOPMOST);
+          } else {
+            DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
+          }
           return 0;
 
         case ID_EXIT:

@@ -1,10 +1,16 @@
 #pragma once
 
 #include "stdafx.h"
-#include "static.h"
 
 #include <stdio.h>
 #include <Tlhelp32.h>
+
+const CHAR *DLL_NAME        = "mawa.dll";
+const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
+const WCHAR *FLOEXE         = L"flo-worker.exe";
+static DWORD WARCRAFT3PID   = 0;
+static DWORD FLOEXE3PID     = 0;
+static BOOL HAVE_DEBUG_PRIV = FALSE;
 
 VOID AdjustDebugPrivileges(VOID) {
   HANDLE            hToken;

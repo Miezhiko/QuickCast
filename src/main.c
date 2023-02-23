@@ -74,11 +74,11 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   // Turn on Scroll Lock if Warcraft3 is running
   if (WARCRAFT3PID) {
-    if (!(GetKeyState(TOGGLE_KEY) & 0x0001)) {
-      keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-      keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+    if (!(GetKeyState(VK_SCROLL) & 0x0001)) {
+      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
     }
-  } else HOTKEYS_ON = FALSE;
+  }
 
   BOOL bRet; 
   MSG msg;
@@ -87,12 +87,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
       TranslateMessage(&msg);
       DispatchMessageW(&msg);
     }
-
-  // Turn off Scroll Lock
-  if (GetKeyState(TOGGLE_KEY) & 0x0001) {
-    keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-    keybd_event(TOGGLE_KEY, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-  }
 
   mainExit:
   if (MUTEX_HANDLE) {

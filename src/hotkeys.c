@@ -47,7 +47,7 @@ VOID goMoveSurround(VOID) {
 
 inline VOID processKeyupHotkeys(DWORD code) {
   switch (code) {
-    case TOGGLE_KEY:
+    case VK_SCROLL:
       HOTKEYS_ON = !HOTKEYS_ON;
       if (HOTKEYS_ON) {
         puts("QuickCast Enabled");
@@ -55,14 +55,9 @@ inline VOID processKeyupHotkeys(DWORD code) {
         puts("QuickCast Disabled");
       }
       return;
-    case EXIT_KEY:
-      if (GetKeyState( VK_CONTROL ) & 0x8000)
-        PostQuitMessage(0);
-      return;
     default:
       if ( HOTKEYS_ON
        && (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0)
-       && !BLOCK_CLICKS_ON
          ) doClick();
       return;
   }

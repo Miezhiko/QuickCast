@@ -8,21 +8,12 @@
 
 #define WC3_SLEEP_TIMEOUT   -2000
 
-#define TOGGLE_KEY          VK_SCROLL
-#define EXIT_KEY            VK_BACK
 #define MOVE_KEY            0x5A
 #define STOP_MOVE_KEY       0x53
 
 #define KEYMAP_OFFSET       128
 
 static BOOL CUSTOM_MACROS   = FALSE;
-
-const CHAR *DLL_NAME        = "mawa.dll";
-const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
-const WCHAR *FLOEXE         = L"flo-worker.exe";
-static DWORD WARCRAFT3PID   = 0;
-static DWORD FLOEXE3PID     = 0;
-static BOOL HAVE_DEBUG_PRIV = FALSE;
 
 #ifdef WITH_BORDERS_CHECK
 static LONG MENU_HEIGHT     = 75;
@@ -36,8 +27,6 @@ static BOOL BLOCK_CLICKS_ON = FALSE;
 const INT SIZE_OF_INPUT     = sizeof(INPUT);
 
 static INT64 CONFIG_KEYS    = 1;
-
-static HANDLE MUTEX_HANDLE  = 0;
 
 static INPUT INPUT_DOWN;
 static INPUT INPUT_UP;
