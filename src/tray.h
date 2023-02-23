@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "static.h"
 
 #include <shellapi.h>
 #include <winuser.h>
@@ -8,6 +7,16 @@
 #define STRINGIFY_M(x) STRINGIFY(x)
 
 #define VERSION STRINGIFY_M(HASH_CMAKE)
+
+#define MUTEX_NAME          L"QuickCast"
+
+#define ID_ABOUT            2000
+#define ID_EXIT             2001
+
+#define IDR_ICO_MAIN        101
+#define IDS_DRAGON          102
+
+static POINT CURSOR_POSITION;
 
 static BOOL MODAL_STATE     = FALSE;
 static HWND WINDOW          = NULL;

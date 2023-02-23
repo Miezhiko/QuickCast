@@ -12,12 +12,12 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/src")
 set(RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_PROJECT_NAME}.rc")
+
+add_library(mawa SHARED src/hotkeys.c)
 add_executable (${CMAKE_PROJECT_NAME}
                 WIN32
                 src/main.c
                 ${RESOURCE})
-
-add_definitions(-DSOURCE_DIR=${CMAKE_SOURCE_DIR})
 
 execute_process(
   COMMAND git rev-parse --short HEAD
@@ -30,12 +30,17 @@ if (WITH_BORDERS_CHECK)
   add_definitions(-DWITH_BORDERS_CHECK=${WITH_BORDERS_CHECK})
 endif (WITH_BORDERS_CHECK)
 
+target_precompile_headers(mawa
+  PRIVATE
+    src/stdafx.h
+)
+
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE
     src/stdafx.h
 )
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ntdll)
+target_link_libraries(mawa ntdll)
 
 configure_file( ${CMAKE_SOURCE_DIR}/misc/conf.ini.example
                 ${CMAKE_CURRENT_BINARY_DIR}/Release/conf.ini

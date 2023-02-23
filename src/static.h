@@ -13,20 +13,16 @@
 #define MOVE_KEY            0x5A
 #define STOP_MOVE_KEY       0x53
 
-#define MUTEX_NAME          L"QuickCast"
-
-#define ID_ABOUT            2000
-#define ID_EXIT             2001
-
-#define IDR_ICO_MAIN        101
-#define IDS_DRAGON          102
-
 #define KEYMAP_OFFSET       128
 
 static BOOL CUSTOM_MACROS   = FALSE;
 
+const CHAR *DLL_NAME        = "mawa.dll";
 const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
+const WCHAR *FLOEXE         = L"flo-worker.exe";
 static DWORD WARCRAFT3PID   = 0;
+static DWORD FLOEXE3PID     = 0;
+static BOOL HAVE_DEBUG_PRIV = FALSE;
 
 #ifdef WITH_BORDERS_CHECK
 static LONG MENU_HEIGHT     = 75;

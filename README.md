@@ -36,8 +36,8 @@ Story
 
 Warcraft 3 Reforged has official support for this but only for their `GRID` hotkeys setup, so I consider that this is not a hack, it's just handy workaround over bad game design at current state. For people who play mobas it's really painful that game doesn't give you this out from the box.
 
-global hook thing
------------------
+App injects itself to Warcraft3 (can close tray after inject)
+-------------------------------------------------------------
 
  - turning on num lock
  - register some hotkeys for quickcast
@@ -48,5 +48,7 @@ global hook thing
  - blocks prscrn, win key etc...
  - use `Ctrl+Backspace` to exit
  - Silly walk (LOL?)
+ - Auto surround mode (F6, stop with S)
+ - Warcraft3 opens additional console for log/stats
 
 and so there you go...
