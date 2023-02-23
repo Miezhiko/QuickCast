@@ -7,13 +7,13 @@ project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
 option(WITH_BORDERS_CHECK "Check ingame for clickable area" TRUE)
+option(USE_INJECT "Inject directly into process" FALSE)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/src")
 set(RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_PROJECT_NAME}.rc")
 
-add_library(mawa SHARED src/hotkeys.c)
 add_executable (${CMAKE_PROJECT_NAME}
                 WIN32
                 src/main.c
@@ -30,17 +30,22 @@ if (WITH_BORDERS_CHECK)
   add_definitions(-DWITH_BORDERS_CHECK=${WITH_BORDERS_CHECK})
 endif (WITH_BORDERS_CHECK)
 
-target_precompile_headers(mawa
+if (USE_INJECT)
+  add_library(mawa SHARED src/hotkeys.c)
+  add_definitions(-DUSE_INJECT=${USE_INJECT})
+  target_precompile_headers(mawa
   PRIVATE
     src/stdafx.h
-)
+  )
+  target_link_libraries(mawa ntdll)
+else()
+  target_link_libraries(${CMAKE_PROJECT_NAME} ntdll)
+endif (USE_INJECT)
 
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE
     src/stdafx.h
 )
-
-target_link_libraries(mawa ntdll)
 
 configure_file( ${CMAKE_SOURCE_DIR}/misc/conf.ini.example
                 ${CMAKE_CURRENT_BINARY_DIR}/Release/conf.ini

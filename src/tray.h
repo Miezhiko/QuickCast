@@ -1,7 +1,9 @@
 #pragma once
 
 #include "stdafx.h"
+#ifdef USE_INJECT
 #include "process.h"
+#endif
 
 #include <shellapi.h>
 #include <winuser.h>
@@ -16,7 +18,9 @@ static HANDLE MUTEX_HANDLE  = 0;
 #define MUTEX_NAME          L"QuickCast"
 
 #define ID_ABOUT            2000
+#ifdef USE_INJECT
 #define ID_INJECT           2001
+#endif
 #define ID_EXIT             2002
 
 #define IDR_ICO_MAIN        101
@@ -55,7 +59,9 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   if ( MODAL_STATE ) return FALSE;
 
   InsertMenuW( hPop, 0, MF_BYPOSITION | MF_STRING, ID_ABOUT,  L"About" );
+  #ifdef USE_INJECT
   InsertMenuW( hPop, 1, MF_BYPOSITION | MF_STRING, ID_INJECT, L"Inject" );
+  #endif
   InsertMenuW( hPop, 2, MF_BYPOSITION | MF_STRING, ID_EXIT,   L"Exit" );
 
   SetMenuDefaultItem( hPop, ID_ABOUT, FALSE );
@@ -111,6 +117,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
           DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
 
+        #ifdef USE_INJECT
         case ID_INJECT:
           GetWarcraft3PID();
           if (WARCRAFT3PID) {
@@ -124,6 +131,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           }
           return 0;
+        #endif
 
         case ID_EXIT:
           PostMessageW( hWnd, WM_CLOSE, 0, 0 );

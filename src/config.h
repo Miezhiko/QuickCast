@@ -1,8 +1,11 @@
 #pragma once
 
 #include "stdafx.h"
-#include "stdio.h"
 #include "static.h"
+
+#ifdef USE_INJECT
+#include "stdio.h"
+#endif
 
 VOID parseConfigFile(const WCHAR* confFile) {
 #ifdef WITH_BORDERS_CHECK
@@ -26,7 +29,9 @@ VOID parseConfigFile(const WCHAR* confFile) {
     valueStr    = (currentStr + wcslen(currentStr) + 1);
     value       = wcstoul(valueStr, NULL, 16);
     if (value) CONFIG_KEYS *= (value + KEYMAP_OFFSET);
+    #ifdef USE_INJECT
     _putws(valueStr);
+    #endif
   }
 
 #ifdef WITH_BORDERS_CHECK
