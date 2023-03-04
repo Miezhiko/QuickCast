@@ -5,12 +5,16 @@
 #include <stdio.h>
 #include <Tlhelp32.h>
 
+#ifdef USE_INJECT
 const CHAR *DLL_NAME        = "mawa.dll";
+#endif
+
 const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
 const WCHAR *FLOEXE         = L"flo-worker.exe";
 static DWORD WARCRAFT3PID   = 0;
 static DWORD FLOEXE3PID     = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
+static HWND WARCRAFT3HWND   = NULL;
 
 VOID AdjustDebugPrivileges(VOID) {
   HANDLE            hToken;
@@ -64,6 +68,19 @@ VOID GetWarcraft3PID(VOID) {
   }
 }
 
+VOID GetWarcraft3Handle(VOID) {
+  HWND hCurWnd = NULL;
+  do {
+    hCurWnd = FindWindowExW(NULL, hCurWnd, NULL, NULL);
+    DWORD dwProcessID = 0;
+    GetWindowThreadProcessId(hCurWnd, &dwProcessID);
+    if (dwProcessID == WARCRAFT3PID) {
+      WARCRAFT3HWND = hCurWnd;
+      return;
+    }
+  } while (hCurWnd != NULL);
+}
+
 BOOL SetWC3PriorityToHigh(VOID) {
   if (FLOEXE3PID) {
     HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, FLOEXE3PID);
@@ -85,7 +102,12 @@ BOOL SetWC3PriorityToHigh(VOID) {
   return FALSE;
 }
 
+#ifdef USE_INJECT
 BOOL Inject(VOID) {
+  if (!HAVE_DEBUG_PRIV) {
+    return FALSE;
+  }
+
   if (!WARCRAFT3PID) {
     return FALSE;
   }
@@ -117,3 +139,4 @@ BOOL Inject(VOID) {
 
   return TRUE;
 }
+#endif

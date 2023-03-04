@@ -63,14 +63,30 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
       goto mainExit;
     }
 
-    if (WARCRAFT3PID && !SetWC3PriorityToHigh()) {
-      MessageBoxW(NULL, L"Failed to set Porcess Priority!", L"Warning!", MB_ICONERROR
-                                                                       | MB_OK
-                                                                       | MB_TOPMOST);
+    if (WARCRAFT3PID) {
+      GetWarcraft3Handle();
+      if (!WARCRAFT3HWND) {
+        MessageBoxW(NULL, L"Can't get WC3 Handle!", L"Warning!", MB_ICONERROR
+                                                               | MB_OK
+                                                               | MB_TOPMOST);
+      }
+      /* else {
+        if (!(WARCRAFT3TID = GetWindowThreadProcessId(WARCRAFT3HWND, NULL))) {
+          MessageBoxW(NULL, L"Can't get WC3 ThreadId!", L"Warning!", MB_ICONERROR
+                                                                   | MB_OK
+                                                                   | MB_TOPMOST);
+        }
+      }
+      */
+      if (!SetWC3PriorityToHigh()) {
+        MessageBoxW(NULL, L"Failed to set Porcess Priority!", L"Warning!", MB_ICONERROR
+                                                                         | MB_OK
+                                                                         | MB_TOPMOST);
+      }
     }
 
     #ifdef USE_INJECT
-    if (WARCRAFT3PID && !Inject()) {
+    if (!Inject()) {
       MessageBoxW(NULL, L"Failed to inject DLL!", L"Error!", MB_ICONERROR
                                                            | MB_OK
                                                            | MB_TOPMOST);
@@ -115,7 +131,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   KEYBOARD_HOOK = SetWindowsHookExW( WH_KEYBOARD_LL
                                    , KeyboardCallback
-                                   , NULL
+                                   , hInstance
                                    , 0 );
   #endif
 

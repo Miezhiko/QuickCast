@@ -55,6 +55,14 @@ inline VOID processKeyupHotkeys(DWORD code) {
       } else {
         puts("QuickCast Disabled");
       }
+      #else
+      if (HOTKEYS_ON && !WARCRAFT3PID) {
+        GetWarcraft3PID();
+        if (WARCRAFT3PID) {
+          GetWarcraft3Handle();
+          SetWC3PriorityToHigh();
+        }
+      }
       #endif
       return;
     default:
@@ -84,7 +92,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
           } else break;
         case VK_CAPITAL:
           if (HOTKEYS_ON) {
-            static TURNING_CAPSLOCK_OFF = FALSE;
+            static BOOL TURNING_CAPSLOCK_OFF = FALSE;
             if (GetKeyState( VK_CONTROL ) & 0x8000) {
               if (GetCursorPos(&CURSOR_POSITION))
                 STORED_CURSOR_POSITION = CURSOR_POSITION;
