@@ -56,19 +56,30 @@ inline VOID processKeyupHotkeys(DWORD code) {
         puts("QuickCast Disabled");
       }
       #else
-      if (HOTKEYS_ON && !WARCRAFT3PID) {
-        GetWarcraft3PID();
-        if (WARCRAFT3PID) {
+      if (HOTKEYS_ON) {
+        if (getNewProcessId() && WARCRAFT3PID) {
           GetWarcraft3Handle();
           SetWC3PriorityToHigh();
+          if (WARCRAFT3HWND) {
+            SetThreadPriorityToHigh();
+          }
         }
       }
       #endif
       return;
     default:
-      if ( HOTKEYS_ON
-       && (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0)
-         ) doClick();
+      if ( HOTKEYS_ON ) {
+        if ( WARCRAFT3ACTIVE ) {
+          if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
+            doClick();
+          }
+        } else if ( WARCRAFT3HWND == GetActiveWindow() ) {
+          WARCRAFT3ACTIVE = TRUE;
+          if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
+            doClick();
+          }
+        }
+      }
       return;
   }
 }
@@ -77,6 +88,25 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
                                  , WPARAM wParam
                                  , LPARAM lParam ) {
   if (uMsg == HC_ACTION) switch(wParam) {
+    case WM_SYSKEYDOWN:
+      if ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode == VK_TAB
+        && HOTKEYS_ON && (GetKeyState( VK_MENU ) & 0x8000)
+      ) {
+        BOOL newHandle = getNewProcessId();
+        if (WARCRAFT3PID) {
+          if (newHandle) {
+            GetWarcraft3Handle();
+            SetWC3PriorityToHigh();
+            if (WARCRAFT3HWND) {
+              SetThreadPriorityToHigh();
+            }
+          }
+          if (WARCRAFT3HWND) {
+            WARCRAFT3ACTIVE = FALSE;
+          }
+        }
+      }
+      break;
     case WM_KEYDOWN:
       switch ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode )  {
         case VK_LWIN:

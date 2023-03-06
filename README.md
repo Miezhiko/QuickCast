@@ -47,8 +47,9 @@ App injects itself to Warcraft3 (can close tray after inject)
  - controls screen borders (menu, bottom menu, minimap)
  - blocks prscrn, win key etc...
  - use `Ctrl+Backspace` to exit
- - Silly walk (LOL?)
- - Auto surround mode (F6, stop with S)
- - Warcraft3 opens additional console for log/stats
-
-and so there you go...
+ - silly walks (on `caps lock`, `[` and `]`)...
+ - auto surround mode (`F6`, stop with `S`)
+ - warcraft3 opens additional console for log/stats
+ - support Inject (a bit buggy) and Global hook modes
+ - sets high priority to wc3 and flo
+ - detects if wc3 is active (e.g. doesn't mess when alt-tabbed)

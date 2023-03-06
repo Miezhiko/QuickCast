@@ -15,6 +15,7 @@ static DWORD WARCRAFT3PID   = 0;
 static DWORD FLOEXE3PID     = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
 static HWND WARCRAFT3HWND   = NULL;
+static BOOL WARCRAFT3ACTIVE = TRUE;
 
 VOID AdjustDebugPrivileges(VOID) {
   HANDLE            hToken;
@@ -46,6 +47,9 @@ VOID GetWarcraft3PID(VOID) {
   PROCESSENTRY32W pr32  = { 0 };
   pr32.dwFlags          = sizeof(PROCESSENTRY32W);
 
+  if (WARCRAFT3PID) WARCRAFT3PID = 0;
+  if (FLOEXE3PID) FLOEXE3PID = 0;
+
   HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (hProcessSnap) {
     pr32.dwSize = sizeof(pr32);
@@ -70,6 +74,9 @@ VOID GetWarcraft3PID(VOID) {
 
 VOID GetWarcraft3Handle(VOID) {
   HWND hCurWnd = NULL;
+
+  if (WARCRAFT3HWND) WARCRAFT3HWND = NULL;
+
   do {
     hCurWnd = FindWindowExW(NULL, hCurWnd, NULL, NULL);
     DWORD dwProcessID = 0;
@@ -79,6 +86,35 @@ VOID GetWarcraft3Handle(VOID) {
       return;
     }
   } while (hCurWnd != NULL);
+}
+
+inline BOOL getNewProcessId() {
+  BOOL NEW_HANDLE = FALSE;
+  if (WARCRAFT3PID) {
+    HANDLE process = OpenProcess(SYNCHRONIZE, FALSE, WARCRAFT3PID);
+    if (GetExitCodeProcess(process, NULL) != STILL_ACTIVE) {
+      GetWarcraft3PID();
+      NEW_HANDLE = TRUE;
+    }
+    CloseHandle(process);
+  } else {
+    GetWarcraft3PID();
+    NEW_HANDLE = TRUE;
+  }
+  return NEW_HANDLE;
+}
+
+BOOL SetThreadPriorityToHigh(VOID) {
+  BOOL success = FALSE;
+  DWORD threadId = GetWindowThreadProcessId(WARCRAFT3HWND, NULL);
+  if (threadId) {
+    HANDLE hThread = OpenThread(THREAD_SET_INFORMATION , TRUE, threadId);          
+    if (SetThreadPriority(hThread, THREAD_PRIORITY_HIGHEST) != 0) {
+      success = TRUE;
+    }
+    CloseHandle(hThread);
+  }
+  return success;
 }
 
 BOOL SetWC3PriorityToHigh(VOID) {
