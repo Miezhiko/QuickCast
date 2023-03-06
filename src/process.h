@@ -14,7 +14,6 @@ const WCHAR *FLOEXE         = L"flo-worker.exe";
 static DWORD WARCRAFT3PID   = 0;
 static DWORD FLOEXE3PID     = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
-static HWND WARCRAFT3HWND   = NULL;
 static BOOL WARCRAFT3ACTIVE = TRUE;
 
 VOID AdjustDebugPrivileges(VOID) {
@@ -72,20 +71,23 @@ VOID GetWarcraft3PID(VOID) {
   }
 }
 
-VOID GetWarcraft3Handle(VOID) {
-  HWND hCurWnd = NULL;
+HWND GetFocusGlobal() {
+  HWND wnd;
+  HWND result = NULL;
+  DWORD TId, PId;
 
-  if (WARCRAFT3HWND) WARCRAFT3HWND = NULL;
-
-  do {
-    hCurWnd = FindWindowExW(NULL, hCurWnd, NULL, NULL);
-    DWORD dwProcessID = 0;
-    GetWindowThreadProcessId(hCurWnd, &dwProcessID);
-    if (dwProcessID == WARCRAFT3PID) {
-      WARCRAFT3HWND = hCurWnd;
-      return;
+  result = GetFocus();
+  if (!result) {
+    wnd = GetForegroundWindow();
+    if(wnd) {
+      TId = GetWindowThreadProcessId(wnd, &PId);
+      if (AttachThreadInput(GetCurrentThreadId(), TId, TRUE)) {
+        result = GetFocus();
+        AttachThreadInput(GetCurrentThreadId(), TId, FALSE);
+      }            
     }
-  } while (hCurWnd != NULL);
+  }
+  return result;
 }
 
 inline BOOL getNewProcessId() {
@@ -106,7 +108,25 @@ inline BOOL getNewProcessId() {
 
 BOOL SetThreadPriorityToHigh(VOID) {
   BOOL success = FALSE;
-  DWORD threadId = GetWindowThreadProcessId(WARCRAFT3HWND, NULL);
+
+  HWND hCurWnd = NULL;
+  HWND wc3Wnd = NULL;
+
+  do {
+    hCurWnd = FindWindowExW(NULL, hCurWnd, NULL, NULL);
+    DWORD dwProcessID = 0;
+    GetWindowThreadProcessId(hCurWnd, &dwProcessID);
+    if (dwProcessID == WARCRAFT3PID) {
+      wc3Wnd = hCurWnd;
+      break;
+    }
+  } while (hCurWnd != NULL);
+
+  if (wc3Wnd == NULL) {
+    return FALSE;
+  }
+
+  DWORD threadId = GetWindowThreadProcessId(wc3Wnd, NULL);
   if (threadId) {
     HANDLE hThread = OpenThread(THREAD_SET_INFORMATION , TRUE, threadId);          
     if (SetThreadPriority(hThread, THREAD_PRIORITY_HIGHEST) != 0) {
@@ -137,6 +157,32 @@ BOOL SetWC3PriorityToHigh(VOID) {
 
   return FALSE;
 }
+
+/*
+DWORD GetParentProcess(DWORD pid) {
+  HANDLE hSnapshot;
+  PROCESSENTRY32 pe32;
+  DWORD ppid = 0;
+
+  hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
+  __try{
+    if( hSnapshot == INVALID_HANDLE_VALUE ) __leave;
+    ZeroMemory( &pe32, sizeof( pe32 ) );
+    pe32.dwSize = sizeof( pe32 );
+    if( !Process32First( hSnapshot, &pe32 ) ) __leave;
+    do {
+      if( pe32.th32ProcessID == pid ) {
+        ppid = pe32.th32ParentProcessID;
+        break;
+      }
+    } while( Process32Next( hSnapshot, &pe32 ) );
+  }
+  __finally{
+    if( hSnapshot != INVALID_HANDLE_VALUE ) CloseHandle( hSnapshot );
+  }
+  return ppid;
+}
+*/
 
 #ifdef USE_INJECT
 BOOL Inject(VOID) {

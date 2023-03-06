@@ -64,23 +64,16 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     }
 
     if (WARCRAFT3PID) {
-      GetWarcraft3Handle();
       if (!SetWC3PriorityToHigh()) {
         MessageBoxW(NULL, L"Failed to set Porcess Priority!", L"Warning!", MB_ICONERROR
                                                                          | MB_OK
                                                                          | MB_TOPMOST);
       }
 
-      if (!WARCRAFT3HWND) {
-        MessageBoxW(NULL, L"Can't get WC3 Handle!", L"Warning!", MB_ICONERROR
-                                                               | MB_OK
-                                                               | MB_TOPMOST);
-      } else {
-        if (!SetThreadPriorityToHigh()) {
-          MessageBoxW(NULL, L"Failed to set thread priority!", L"Warning!", MB_ICONERROR
-                                                                          | MB_OK
-                                                                          | MB_TOPMOST);
-        }
+      if (!SetThreadPriorityToHigh()) {
+        MessageBoxW(NULL, L"Failed to set thread priority!", L"Warning!", MB_ICONERROR
+                                                                        | MB_OK
+                                                                        | MB_TOPMOST);
       }
     }
 

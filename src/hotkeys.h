@@ -5,6 +5,7 @@
 #include "input.h"    // basic input functions
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
+#include "process.h"  // process stuff
 
 #ifdef USE_INJECT
 #include "stdio.h"    // for console
@@ -58,25 +59,27 @@ inline VOID processKeyupHotkeys(DWORD code) {
       #else
       if (HOTKEYS_ON) {
         if (getNewProcessId() && WARCRAFT3PID) {
-          GetWarcraft3Handle();
           SetWC3PriorityToHigh();
-          if (WARCRAFT3HWND) {
-            SetThreadPriorityToHigh();
-          }
+          SetThreadPriorityToHigh();
         }
       }
       #endif
       return;
     default:
       if ( HOTKEYS_ON ) {
-        if ( WARCRAFT3ACTIVE ) {
-          if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
+        if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
+          if ( WARCRAFT3ACTIVE ) {
             doClick();
-          }
-        } else if ( WARCRAFT3HWND == GetActiveWindow() ) {
-          WARCRAFT3ACTIVE = TRUE;
-          if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
-            doClick();
+          } else {
+            HWND focusControl = GetFocusGlobal();
+            if ( focusControl ) {
+              DWORD focusedProcessId = 0;
+              GetWindowThreadProcessId(focusControl, &focusedProcessId);
+              if ( focusedProcessId && WARCRAFT3PID == focusedProcessId ) {
+                WARCRAFT3ACTIVE = TRUE;
+                doClick();
+              }
+            }
           }
         }
       }
@@ -95,15 +98,10 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
         BOOL newHandle = getNewProcessId();
         if (WARCRAFT3PID) {
           if (newHandle) {
-            GetWarcraft3Handle();
             SetWC3PriorityToHigh();
-            if (WARCRAFT3HWND) {
-              SetThreadPriorityToHigh();
-            }
+            SetThreadPriorityToHigh();
           }
-          if (WARCRAFT3HWND) {
-            WARCRAFT3ACTIVE = FALSE;
-          }
+          WARCRAFT3ACTIVE = FALSE;
         }
       }
       break;
