@@ -65,6 +65,12 @@ inline VOID processKeyupHotkeys(DWORD code) {
       }
       #endif
       return;
+    case VK_BACK:
+      if (GetKeyState( VK_CONTROL ) & 0x8000)
+        if (WINDOW)
+          PostMessage( WINDOW, WM_CLOSE, 0, 0 );
+        else PostQuitMessage(0);
+      return;
     default:
       if ( HOTKEYS_ON ) {
         if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
