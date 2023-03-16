@@ -120,7 +120,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
           if (HOTKEYS_ON) return 1;
           else break;
         case VK_F6:
-          if (HOTKEYS_ON) {
+          if (HOTKEYS_ON && CUSTOM_MACROS) {
             goMoveSurround();
             return 1;
           } else break;
