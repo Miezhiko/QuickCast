@@ -59,8 +59,9 @@ inline VOID processKeyupHotkeys(DWORD code) {
       #else
       if (HOTKEYS_ON) {
         if (getNewProcessId() && WARCRAFT3PID) {
-          SetWC3PriorityToHigh();
-          SetThreadPriorityToHigh();
+          enableNumlock();
+          setWC3PriorityToHigh();
+          setThreadPriorityToHigh();
         }
       }
       #endif
@@ -77,7 +78,7 @@ inline VOID processKeyupHotkeys(DWORD code) {
           if ( WARCRAFT3ACTIVE ) {
             doClick();
           } else {
-            HWND focusControl = GetFocusGlobal();
+            HWND focusControl = getFocusGlobal();
             if ( focusControl ) {
               DWORD focusedProcessId = 0;
               GetWindowThreadProcessId(focusControl, &focusedProcessId);
@@ -104,8 +105,8 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
         BOOL newHandle = getNewProcessId();
         if (WARCRAFT3PID) {
           if (newHandle) {
-            SetWC3PriorityToHigh();
-            SetThreadPriorityToHigh();
+            setWC3PriorityToHigh();
+            setThreadPriorityToHigh();
           }
           WARCRAFT3ACTIVE = FALSE;
         }

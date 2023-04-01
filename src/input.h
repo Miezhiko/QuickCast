@@ -24,6 +24,13 @@ inline VOID shift_up(VOID) {
   keybd_event(VK_SHIFT, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 }
 
+inline VOID enableNumlock(VOID) {
+  if (!(GetKeyState(VK_NUMLOCK) & 0x0001)) {
+    keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+    keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+  }
+}
+
 // 0x31 is one, etc...
 VOID keyPress(DWORD keyCode) {
   INPUT input;

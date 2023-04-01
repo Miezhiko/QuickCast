@@ -6,7 +6,7 @@
 
 static FILE* CONSOLE_FILE = NULL;
 
-DWORD WorkerThread(HMODULE hModule) {
+DWORD workerThread(HMODULE hModule) {
   MSG   message;
 
   KEYBOARD_HOOK = SetWindowsHookExW( WH_KEYBOARD_LL
@@ -75,7 +75,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fwdreason, LPVOID lpvReserved) {
 
   DisableThreadLibraryCalls(hinstDLL);
   SetThreadPriority(
-    CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WorkerThread, NULL, 0, NULL),
+    CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)workerThread, NULL, 0, NULL),
     THREAD_PRIORITY_NORMAL
   );
 

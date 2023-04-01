@@ -13,11 +13,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
                   , _In_ LPSTR lpCmdLine
                   , _In_ int nShowCmd ) {
 
-  // Turn on Num Lock before mutex check so even if are running already enable Num Lock
-  if (!(GetKeyState(VK_NUMLOCK) & 0x0001)) {
-    keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-    keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-  }
+  enableNumlock();
 
   // Turn off Caps Lock (just to be sure we don't have it)
   if (GetKeyState(VK_CAPITAL) & 0x0001) {
@@ -48,9 +44,8 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     RegisterClassExW( &wclx );
   }
 
-  AdjustDebugPrivileges();
-
-  GetWarcraft3PID();
+  adjustDebugPrivileges();
+  getWarcraft3PID();
 
   {
     WINDOW = CreateWindowExW( 0, MUTEX_NAME
@@ -64,13 +59,13 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     }
 
     if (WARCRAFT3PID) {
-      if (!SetWC3PriorityToHigh()) {
+      if (!setWC3PriorityToHigh()) {
         MessageBoxW(NULL, L"Failed to set Porcess Priority!", L"Warning!", MB_ICONERROR
                                                                          | MB_OK
                                                                          | MB_TOPMOST);
       }
 
-      if (!SetThreadPriorityToHigh()) {
+      if (!setThreadPriorityToHigh()) {
         MessageBoxW(NULL, L"Failed to set thread priority!", L"Warning!", MB_ICONERROR
                                                                         | MB_OK
                                                                         | MB_TOPMOST);

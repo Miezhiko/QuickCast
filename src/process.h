@@ -16,7 +16,7 @@ static DWORD FLOEXE3PID     = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
 static BOOL WARCRAFT3ACTIVE = TRUE;
 
-VOID AdjustDebugPrivileges(VOID) {
+VOID adjustDebugPrivileges(VOID) {
   HANDLE            hToken;
   LUID              sedebugnameValue;
   TOKEN_PRIVILEGES  tkp;
@@ -40,7 +40,7 @@ VOID AdjustDebugPrivileges(VOID) {
   HAVE_DEBUG_PRIV = TRUE;
 }
 
-VOID GetWarcraft3PID(VOID) {
+VOID getWarcraft3PID(VOID) {
   DWORD appbase         = 0;
   BOOL working          = 0;
   PROCESSENTRY32W pr32  = { 0 };
@@ -71,7 +71,7 @@ VOID GetWarcraft3PID(VOID) {
   }
 }
 
-HWND GetFocusGlobal() {
+HWND getFocusGlobal() {
   HWND wnd;
   HWND result = NULL;
   DWORD TId, PId;
@@ -95,18 +95,18 @@ inline BOOL getNewProcessId() {
   if (WARCRAFT3PID) {
     HANDLE process = OpenProcess(SYNCHRONIZE, FALSE, WARCRAFT3PID);
     if (GetExitCodeProcess(process, NULL) != STILL_ACTIVE) {
-      GetWarcraft3PID();
+      getWarcraft3PID();
       NEW_HANDLE = TRUE;
     }
     CloseHandle(process);
   } else {
-    GetWarcraft3PID();
+    getWarcraft3PID();
     NEW_HANDLE = TRUE;
   }
   return NEW_HANDLE;
 }
 
-BOOL SetThreadPriorityToHigh(VOID) {
+BOOL setThreadPriorityToHigh(VOID) {
   BOOL success = FALSE;
 
   HWND hCurWnd = NULL;
@@ -137,7 +137,7 @@ BOOL SetThreadPriorityToHigh(VOID) {
   return success;
 }
 
-BOOL SetWC3PriorityToHigh(VOID) {
+BOOL setWC3PriorityToHigh(VOID) {
   if (FLOEXE3PID) {
     HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, FLOEXE3PID);
     if (hProcess) {
