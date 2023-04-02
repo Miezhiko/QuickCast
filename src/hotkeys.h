@@ -6,6 +6,7 @@
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
 #include "process.h"  // process stuff
+#include "tray.h"     // tray icon
 
 #ifdef USE_INJECT
 #include "stdio.h"    // for console

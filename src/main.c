@@ -1,7 +1,6 @@
 #pragma optimize( "ty", on )
 
 #include "stdafx.h"   // include system headers
-#include "tray.h"     // tray icon (optional)
 #include "process.h"  // WC3 process stuff
 
 #ifndef USE_INJECT
