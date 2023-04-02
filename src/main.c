@@ -3,8 +3,10 @@
 #include "stdafx.h"   // include system headers
 #include "process.h"  // WC3 process stuff
 
-#ifndef USE_INJECT
-#include "hotkeys.h"  // Hooks
+#ifdef USE_INJECT
+#include "tray.h"    // Tray
+#else
+#include "hotkeys.h"  // Hooks (and Tray)
 #endif
 
 INT WINAPI WinMain( _In_ HINSTANCE hInstance

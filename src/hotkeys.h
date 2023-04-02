@@ -6,10 +6,11 @@
 #include "config.h"   // config parsing
 #include "memes.h"    // funny macros
 #include "process.h"  // process stuff
-#include "tray.h"     // tray icon
 
 #ifdef USE_INJECT
 #include "stdio.h"    // for console
+#else
+#include "tray.h"     // tray icon
 #endif
 
 inline VOID doClick(VOID) {
@@ -68,10 +69,15 @@ inline VOID processKeyupHotkeys(DWORD code) {
       #endif
       return;
     case VK_BACK:
-      if (GetKeyState( VK_CONTROL ) & 0x8000)
-        if (WINDOW)
-          PostMessage( WINDOW, WM_CLOSE, 0, 0 );
-        else PostQuitMessage(0);
+      if (GetKeyState( VK_CONTROL ) & 0x8000) {
+        #ifdef USE_INJECT
+          PostQuitMessage(0);
+        #else
+          if (WINDOW)
+            PostMessage( WINDOW, WM_CLOSE, 0, 0 );
+          else PostQuitMessage(0);
+        #endif
+      }
       return;
     default:
       if ( HOTKEYS_ON ) {
