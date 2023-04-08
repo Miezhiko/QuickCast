@@ -53,3 +53,4 @@ App injects itself to Warcraft3 (can close tray after inject)
  - support Inject (a bit buggy) and Global hook modes
  - sets high priority to wc3 and flo
  - detects if wc3 is active (e.g. doesn't mess when alt-tabbed)
+ - fast WC3 restart with `Ctrl+F7` `Ctrl+F8`

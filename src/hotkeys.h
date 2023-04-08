@@ -132,6 +132,23 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
             goMoveSurround();
             return 1;
           } else break;
+        case VK_F7:
+          if (HOTKEYS_ON) {
+            if (GetKeyState( VK_CONTROL ) & 0x8000) {
+              if (WARCRAFT3PID) {
+                TerminateWC3();
+                HOTKEYS_ON = FALSE;
+              }
+            }
+            return 1;
+          } else break;
+        case VK_F8:
+          if (WARCRAFT3PID == 0) {
+            if (GetKeyState( VK_CONTROL ) & 0x8000) {
+              launchW3();
+            }
+            return 1;
+          } else break;
         case VK_CAPITAL:
           if (HOTKEYS_ON) {
             static BOOL TURNING_CAPSLOCK_OFF = FALSE;

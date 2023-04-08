@@ -1,9 +1,11 @@
 #pragma once
 
 #include "stdafx.h"
+#include "input.h"
 
 #include <stdio.h>
 #include <Tlhelp32.h>
+#include <shellapi.h>
 
 #ifdef USE_INJECT
 const CHAR *DLL_NAME        = "mawa.dll";
@@ -11,6 +13,7 @@ const CHAR *DLL_NAME        = "mawa.dll";
 
 const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
 const WCHAR *FLOEXE         = L"flo-worker.exe";
+const WCHAR *BNETRUNWC3     = L"C:\\Program Files (x86)\\Battle.net\\Battle.net.exe";
 static DWORD WARCRAFT3PID   = 0;
 static DWORD FLOEXE3PID     = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
@@ -158,31 +161,62 @@ BOOL setWC3PriorityToHigh(VOID) {
   return FALSE;
 }
 
-/*
-DWORD GetParentProcess(DWORD pid) {
-  HANDLE hSnapshot;
-  PROCESSENTRY32 pe32;
-  DWORD ppid = 0;
+VOID TerminateWC3() {
+  HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, WARCRAFT3PID);
+  if (!hProcess) {
+    return;
+  }
 
-  hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
-  __try{
-    if( hSnapshot == INVALID_HANDLE_VALUE ) __leave;
-    ZeroMemory( &pe32, sizeof( pe32 ) );
-    pe32.dwSize = sizeof( pe32 );
-    if( !Process32First( hSnapshot, &pe32 ) ) __leave;
-    do {
-      if( pe32.th32ProcessID == pid ) {
-        ppid = pe32.th32ParentProcessID;
-        break;
-      }
-    } while( Process32Next( hSnapshot, &pe32 ) );
+  TerminateProcess(hProcess, 1);
+  CloseHandle(hProcess);
+
+  if (GetKeyState(VK_SCROLL) & 0x0001) {
+    keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+    keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
-  __finally{
-    if( hSnapshot != INVALID_HANDLE_VALUE ) CloseHandle( hSnapshot );
-  }
-  return ppid;
+
+  WARCRAFT3PID = 0;
 }
-*/
+
+VOID launchW3() {
+  SHELLEXECUTEINFOW ShRun = {0};
+  ShRun.cbSize        = sizeof(SHELLEXECUTEINFO);
+  ShRun.hwnd          = NULL;
+  ShRun.lpVerb        = NULL;
+  ShRun.lpFile        = BNETRUNWC3;
+  ShRun.lpParameters  = L"--exec=\"launch W3\"";
+  ShRun.hInstApp      = NULL;
+
+  INT runResult = ShellExecuteExW(&ShRun);
+  if (runResult == 0) {
+    MessageBoxW(NULL, L"Can't Run WC3!", L"Error!", MB_ICONERROR
+                                                  | MB_OK
+                                                  | MB_TOPMOST);
+    return;
+  }
+
+  Sleep(2000); // 2sec w8
+
+  if (getNewProcessId() && WARCRAFT3PID) {
+    enableNumlock();
+    setWC3PriorityToHigh();
+    setThreadPriorityToHigh();
+  }
+
+  // Turn off Caps Lock (just to be sure we don't have it)
+  if (GetKeyState(VK_CAPITAL) & 0x0001) {
+    keybd_event(VK_CAPITAL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+    keybd_event(VK_CAPITAL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+  }
+
+  if (WARCRAFT3PID) {
+    if (!(GetKeyState(VK_SCROLL) & 0x0001)) {
+      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+    }
+    HOTKEYS_ON = TRUE;
+  }
+}
 
 #ifdef USE_INJECT
 BOOL Inject(VOID) {
@@ -222,3 +256,29 @@ BOOL Inject(VOID) {
   return TRUE;
 }
 #endif
+
+/*
+DWORD GetParentProcess(DWORD pid) {
+  HANDLE hSnapshot;
+  PROCESSENTRY32 pe32;
+  DWORD ppid = 0;
+
+  hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
+  __try{
+    if( hSnapshot == INVALID_HANDLE_VALUE ) __leave;
+    ZeroMemory( &pe32, sizeof( pe32 ) );
+    pe32.dwSize = sizeof( pe32 );
+    if( !Process32First( hSnapshot, &pe32 ) ) __leave;
+    do {
+      if( pe32.th32ProcessID == pid ) {
+        ppid = pe32.th32ParentProcessID;
+        break;
+      }
+    } while( Process32Next( hSnapshot, &pe32 ) );
+  }
+  __finally{
+    if( hSnapshot != INVALID_HANDLE_VALUE ) CloseHandle( hSnapshot );
+  }
+  return ppid;
+}
+*/

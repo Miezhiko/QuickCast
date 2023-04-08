@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+
 #ifdef USE_INJECT
 #include "process.h"
 #endif
@@ -31,7 +32,7 @@ static POINT CURSOR_POSITION;
 static BOOL MODAL_STATE     = FALSE;
 static HWND WINDOW          = NULL;
 
-void RemoveTrayIcon( HWND hWnd, UINT uID ) {
+VOID removeTrayIcon( HWND hWnd, UINT uID ) {
   NOTIFYICONDATAW nid;
                   nid.hWnd = hWnd;
                   nid.uID  = uID;
@@ -39,7 +40,7 @@ void RemoveTrayIcon( HWND hWnd, UINT uID ) {
   Shell_NotifyIconW( NIM_DELETE, &nid );
 }
 
-void AddTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
+VOID addTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
   NOTIFYICONDATAW nid;
                   nid.hWnd             = hWnd;
                   nid.uID              = uID;
@@ -54,7 +55,7 @@ void AddTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
   Shell_NotifyIconW( NIM_ADD, &nid );
 }
 
-BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
+BOOL showPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   HMENU hPop = CreatePopupMenu();
   if ( MODAL_STATE ) return FALSE;
 
@@ -88,10 +89,10 @@ BOOL ShowPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
   return 0;
 }
 
-inline VOID DragonBox(HWND hWnd, LPCWSTR title, UINT flags) {
+inline VOID dragonBox(HWND hWnd, LPCWSTR title, UINT flags) {
   MODAL_STATE = TRUE;
 
-  WCHAR* dragon = malloc(MAX_PATH * sizeof(WCHAR));
+  WCHAR* dragon = (WCHAR*)malloc(MAX_PATH * sizeof(WCHAR));
   LoadStringW(GetModuleHandle(NULL), IDS_DRAGON, dragon, MAX_PATH);
   MessageBoxW( hWnd, dragon, title, flags );
   free( dragon );
@@ -102,10 +103,10 @@ inline VOID DragonBox(HWND hWnd, LPCWSTR title, UINT flags) {
 static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) { 
   switch (uMsg) {
     case WM_CREATE:
-      AddTrayIcon( hWnd, 1, WM_APP, 0 );
+      addTrayIcon( hWnd, 1, WM_APP, 0 );
       return 0;
     case WM_CLOSE:
-      RemoveTrayIcon( hWnd, 1 );
+      removeTrayIcon( hWnd, 1 );
       PostQuitMessage( 0 );
 
       return DefWindowProcW( hWnd, uMsg, wParam, lParam );
@@ -114,14 +115,14 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
       switch (LOWORD(wParam)) {
         if ( MODAL_STATE ) return 1;
         case ID_ABOUT:
-          DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
+          dragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
 
         #ifdef USE_INJECT
         case ID_INJECT:
-          GetWarcraft3PID();
+          getWarcraft3PID();
           if (WARCRAFT3PID) {
-            SetWC3PriorityToHigh();
+            setWC3PriorityToHigh();
           }
           if (WARCRAFT3PID && !Inject()) {
             MessageBoxW(NULL, L"Failed to inject DLL!", L"Error!", MB_ICONERROR
@@ -143,12 +144,12 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_APP:
       switch (lParam) {
         case WM_LBUTTONDBLCLK:
-          DragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
+          dragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
 
         case WM_RBUTTONUP:
           SetForegroundWindow( hWnd );
-          ShowPopupMenu( hWnd, NULL, -1 );
+          showPopupMenu( hWnd, NULL, -1 );
           PostMessageW( hWnd, WM_APP + 1, 0, 0 );
           return 0;
       }
