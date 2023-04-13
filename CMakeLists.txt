@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 add_compile_options(-W2)
-set(CMAKE_C_FLAGS_RELEASE "/Oi /Ot /Oy /O2 /GL /Qpar /WX /TC /std:c17")
+set(CMAKE_C_FLAGS_RELEASE "/Oi /Ot /Oy /Ox /GL /Gz /Qpar /WX /TC /std:c17")
 
 project (QuickCast)
 
