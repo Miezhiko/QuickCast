@@ -143,9 +143,16 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
             return 1;
           } else break;
         case VK_F8:
-          if (WARCRAFT3PID == 0) {
-            if (GetKeyState( VK_CONTROL ) & 0x8000) {
+          if (GetKeyState( VK_CONTROL ) & 0x8000) {
+            if (WARCRAFT3PID == 0) {
               launchW3();
+            } else {
+              // in case if WC3 crashed we still have PID
+              // so let's check if WC3 is alive here
+              getWarcraft3PID();
+              if (WARCRAFT3PID == 0) {
+                launchW3();
+              }
             }
             return 1;
           } else break;
