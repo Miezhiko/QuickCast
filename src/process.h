@@ -141,6 +141,7 @@ BOOL setThreadPriorityToHigh(VOID) {
 }
 
 BOOL setWC3PriorityToHigh(VOID) {
+  /* do not change FLO priority
   if (FLOEXE3PID) {
     HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, FLOEXE3PID);
     if (hProcess) {
@@ -148,6 +149,7 @@ BOOL setWC3PriorityToHigh(VOID) {
       CloseHandle(hProcess);
     }
   }
+  */
 
   if (WARCRAFT3PID) {
     HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, WARCRAFT3PID);
