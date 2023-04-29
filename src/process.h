@@ -12,10 +12,8 @@ const CHAR *DLL_NAME        = "mawa.dll";
 #endif
 
 const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
-const WCHAR *FLOEXE         = L"flo-worker.exe";
 const WCHAR *BNETRUNWC3     = L"C:\\Program Files (x86)\\Battle.net\\Battle.net.exe";
 static DWORD WARCRAFT3PID   = 0;
-static DWORD FLOEXE3PID     = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
 static BOOL WARCRAFT3ACTIVE = TRUE;
 
@@ -50,7 +48,6 @@ VOID getWarcraft3PID(VOID) {
   pr32.dwFlags          = sizeof(PROCESSENTRY32W);
 
   if (WARCRAFT3PID) WARCRAFT3PID = 0;
-  if (FLOEXE3PID) FLOEXE3PID = 0;
 
   HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (hProcessSnap) {
@@ -60,11 +57,8 @@ VOID getWarcraft3PID(VOID) {
       if ( WARCRAFT3PID == 0
         && wcscmp(pr32.szExeFile, WARCRAFT3EXE) == 0 ) {
         WARCRAFT3PID = pr32.th32ProcessID;
-      } else if ( FLOEXE3PID == 0
-               && wcscmp(pr32.szExeFile, FLOEXE) == 0 ) {
-        FLOEXE3PID = pr32.th32ProcessID;
       }
-      if (WARCRAFT3PID != 0 && FLOEXE3PID != 0) {
+      if (WARCRAFT3PID != 0) {
         break;
       } else {
         working = Process32NextW(hProcessSnap, &pr32);
@@ -141,16 +135,6 @@ BOOL setThreadPriorityToHigh(VOID) {
 }
 
 BOOL setWC3PriorityToHigh(VOID) {
-  /* do not change FLO priority
-  if (FLOEXE3PID) {
-    HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, FLOEXE3PID);
-    if (hProcess) {
-      SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS);
-      CloseHandle(hProcess);
-    }
-  }
-  */
-
   if (WARCRAFT3PID) {
     HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, WARCRAFT3PID);
     if (hProcess) {
