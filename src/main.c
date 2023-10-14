@@ -46,7 +46,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   }
 
   adjustDebugPrivileges();
-  getWarcraft3PID();
 
   {
     WINDOW = CreateWindowExW( 0, MUTEX_NAME
@@ -57,20 +56,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
                                                             | MB_OK
                                                             | MB_TOPMOST);
       goto mainExit;
-    }
-
-    if (WARCRAFT3PID) {
-      if (!setWC3PriorityToHigh()) {
-        MessageBoxW(NULL, L"Failed to set Porcess Priority!", L"Warning!", MB_ICONERROR
-                                                                         | MB_OK
-                                                                         | MB_TOPMOST);
-      }
-
-      if (!setThreadPriorityToHigh()) {
-        MessageBoxW(NULL, L"Failed to set thread priority!", L"Warning!", MB_ICONERROR
-                                                                        | MB_OK
-                                                                        | MB_TOPMOST);
-      }
     }
 
     #ifdef USE_INJECT
@@ -89,21 +74,13 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
   parseConfigFile(L"./conf.ini");
   #endif
 
-  // Turn on Scroll Lock if Warcraft3 is running
-  if (WARCRAFT3PID) {
-    if (!(GetKeyState(VK_SCROLL) & 0x0001)) {
-      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-    }
+  // Turn on Scroll Lock
+  if (!(GetKeyState(VK_SCROLL) & 0x0001)) {
+    keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
+    keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
+
   #ifndef USE_INJECT
-  else {
-    if (GetKeyState(VK_SCROLL) & 0x0001) {
-      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-      keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-    }
-    HOTKEYS_ON = FALSE;
-  }
 
   INPUT_DOWN.type             = INPUT_UP.type           = INPUT_MOUSE;
   INPUT_DOWN.mi.dwExtraInfo   = INPUT_UP.mi.dwExtraInfo = 0;

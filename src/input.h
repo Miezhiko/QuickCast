@@ -16,6 +16,7 @@ inline VOID mouseRightClick(VOID) {
   SendInput(1, &INPUT_UP_R, SIZE_OF_INPUT);
 }
 
+#ifdef WITH_MEMES
 inline VOID shift_down(VOID) {
   keybd_event(VK_SHIFT, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
 }
@@ -23,6 +24,7 @@ inline VOID shift_down(VOID) {
 inline VOID shift_up(VOID) {
   keybd_event(VK_SHIFT, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 }
+#endif
 
 inline VOID enableNumlock(VOID) {
   if (!(GetKeyState(VK_NUMLOCK) & 0x0001)) {

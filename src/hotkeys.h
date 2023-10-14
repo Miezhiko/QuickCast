@@ -4,8 +4,11 @@
 #include "static.h"   // static variables and constants
 #include "input.h"    // basic input functions
 #include "config.h"   // config parsing
-#include "memes.h"    // funny macros
 #include "process.h"  // process stuff
+
+#ifdef WITH_MEMES
+#include "memes.h"    // funny macros
+#endif
 
 #ifdef USE_INJECT
 #include "stdio.h"    // for console
@@ -27,6 +30,7 @@ inline VOID doClick(VOID) {
   if (CUSTOM_MACROS) STORED_CURSOR_POSITION = CURSOR_POSITION;
 }
 
+#ifdef WITH_MEMES
 VOID goMoveSurround(VOID) {
   if (BLOCK_CLICKS_ON) return;
   BLOCK_CLICKS_ON = TRUE;
@@ -47,6 +51,7 @@ VOID goMoveSurround(VOID) {
       BLOCK_CLICKS_ON = FALSE;
   }
 }
+#endif
 
 inline VOID processKeyupHotkeys(DWORD code) {
   switch (code) {
@@ -68,6 +73,8 @@ inline VOID processKeyupHotkeys(DWORD code) {
       }
       #endif
       return;
+    // use tray icon to exit, this hotkey is confusing
+    #ifdef WITH_MEMES
     case VK_BACK:
       if (GetKeyState( VK_CONTROL ) & 0x8000) {
         #ifdef USE_INJECT
@@ -79,6 +86,7 @@ inline VOID processKeyupHotkeys(DWORD code) {
         #endif
       }
       return;
+    #endif
     default:
       if ( HOTKEYS_ON ) {
         if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
@@ -127,6 +135,8 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
         case VK_SNAPSHOT:
           if (HOTKEYS_ON) return 1;
           else break;
+        // memes section
+        #ifdef WITH_MEMES
         case VK_F6:
           if (HOTKEYS_ON && CUSTOM_MACROS) {
             goMoveSurround();
@@ -194,6 +204,7 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
             backAndForwardHorizontal();
             return 1;
           } else break;
+        #endif
         default: break;
       }
       break;

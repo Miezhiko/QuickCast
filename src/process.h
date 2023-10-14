@@ -147,6 +147,7 @@ BOOL setWC3PriorityToHigh(VOID) {
   return FALSE;
 }
 
+#ifdef WITH_MEMES
 VOID TerminateWC3() {
   HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, WARCRAFT3PID);
   if (!hProcess) {
@@ -203,6 +204,7 @@ VOID launchW3() {
     HOTKEYS_ON = TRUE;
   }
 }
+#endif
 
 #ifdef USE_INJECT
 BOOL Inject(VOID) {

@@ -7,6 +7,7 @@ project (QuickCast)
 
 option(USE_LTO "Use link time optimization" TRUE)
 option(WITH_BORDERS_CHECK "Check ingame for clickable area" TRUE)
+option(WITH_MEMES "Additional funny rarely useful hotkeys" FALSE)
 option(USE_INJECT "Inject directly into process" FALSE)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
@@ -29,6 +30,10 @@ add_definitions(-DHASH_CMAKE=${GIT_COMMIT_HASH})
 if (WITH_BORDERS_CHECK)
   add_definitions(-DWITH_BORDERS_CHECK=${WITH_BORDERS_CHECK})
 endif (WITH_BORDERS_CHECK)
+
+if (WITH_MEMES)
+  add_definitions(-DWITH_MEMES=${WITH_MEMES})
+endif (WITH_MEMES)
 
 if (USE_INJECT)
   add_library(mawa SHARED src/hotkeys.c)
