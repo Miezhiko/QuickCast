@@ -90,19 +90,7 @@ inline VOID processKeyupHotkeys(DWORD code) {
     default:
       if ( HOTKEYS_ON ) {
         if (CONFIG_KEYS % (code + KEYMAP_OFFSET) == 0) {
-          if ( WARCRAFT3ACTIVE ) {
-            doClick();
-          } else {
-            HWND focusControl = getFocusGlobal();
-            if ( focusControl ) {
-              DWORD focusedProcessId = 0;
-              GetWindowThreadProcessId(focusControl, &focusedProcessId);
-              if ( focusedProcessId && WARCRAFT3PID == focusedProcessId ) {
-                WARCRAFT3ACTIVE = TRUE;
-                doClick();
-              }
-            }
-          }
+          doClick();
         }
       }
       return;
@@ -113,20 +101,6 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
                                  , WPARAM wParam
                                  , LPARAM lParam ) {
   if (uMsg == HC_ACTION) switch(wParam) {
-    case WM_SYSKEYDOWN:
-      if ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode == VK_TAB
-        && HOTKEYS_ON && (GetKeyState( VK_MENU ) & 0x8000)
-      ) {
-        BOOL newHandle = getNewProcessId();
-        if (WARCRAFT3PID) {
-          if (newHandle) {
-            setWC3PriorityToHigh();
-            setThreadPriorityToHigh();
-          }
-          WARCRAFT3ACTIVE = FALSE;
-        }
-      }
-      break;
     case WM_KEYDOWN:
       switch ( ((KBDLLHOOKSTRUCT*)lParam)->vkCode )  {
         case VK_LWIN:

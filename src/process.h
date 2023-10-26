@@ -15,7 +15,6 @@ const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
 const WCHAR *BNETRUNWC3     = L"C:\\Program Files (x86)\\Battle.net\\Battle.net.exe";
 static DWORD WARCRAFT3PID   = 0;
 static BOOL HAVE_DEBUG_PRIV = FALSE;
-static BOOL WARCRAFT3ACTIVE = TRUE;
 
 VOID adjustDebugPrivileges(VOID) {
   HANDLE            hToken;
