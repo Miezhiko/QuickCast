@@ -14,7 +14,7 @@ VOID parseConfigFile(const WCHAR* confFile) {
   const WCHAR *KEYS_SECTION    = L"QUICKCAST";
 
   DWORD value       = 0;
-  INT len           = 0;
+  size_t len        = 0;
   WCHAR *currentStr = NULL;
   WCHAR *context    = NULL;
   WCHAR* valueStr   = NULL;

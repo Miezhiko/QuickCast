@@ -40,7 +40,7 @@ VOID removeTrayIcon( HWND hWnd, UINT uID ) {
   Shell_NotifyIconW( NIM_DELETE, &nid );
 }
 
-VOID addTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
+VOID addTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg ) {
   NOTIFYICONDATAW nid;
                   nid.hWnd             = hWnd;
                   nid.uID              = uID;
@@ -49,13 +49,13 @@ VOID addTrayIcon( HWND hWnd, UINT uID, UINT uCallbackMsg, UINT uIcon ) {
 
   WCHAR buffer[MAX_PATH];
   GetModuleFileNameW( NULL, buffer, MAX_PATH );
-  ExtractIconExW( buffer, 0, NULL, &(nid.hIcon), 1 ); 
-  wcscpy        ( nid.szTip, VERSION );
+  ExtractIconExW( buffer, 0, NULL, &(nid.hIcon), 1 );
+  wcscpy_s      ( nid.szTip, _countof(nid.szTip), VERSION );
 
   Shell_NotifyIconW( NIM_ADD, &nid );
 }
 
-BOOL showPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
+BOOL showPopupMenu( HWND hWnd, POINT *curpos ) {
   HMENU hPop = CreatePopupMenu();
   if ( MODAL_STATE ) return FALSE;
 
@@ -76,7 +76,7 @@ BOOL showPopupMenu( HWND hWnd, POINT *curpos, int wDefaultItem ) {
     }
 
     {
-      WORD cmd = TrackPopupMenu( hPop, TPM_LEFTALIGN
+      BOOL cmd = TrackPopupMenu( hPop, TPM_LEFTALIGN
                                      | TPM_RIGHTBUTTON
                                      | TPM_RETURNCMD
                                      | TPM_NONOTIFY
@@ -103,7 +103,7 @@ inline VOID dragonBox(HWND hWnd, LPCWSTR title, UINT flags) {
 static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) { 
   switch (uMsg) {
     case WM_CREATE:
-      addTrayIcon( hWnd, 1, WM_APP, 0 );
+      addTrayIcon( hWnd, 1, WM_APP );
       return 0;
     case WM_CLOSE:
       removeTrayIcon( hWnd, 1 );
@@ -113,7 +113,6 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_COMMAND:
       switch (LOWORD(wParam)) {
-        if ( MODAL_STATE ) return 1;
         case ID_ABOUT:
           dragonBox( hWnd, MUTEX_NAME, MB_ICONINFORMATION | MB_OK );
           return 0;
@@ -149,7 +148,7 @@ static LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
         case WM_RBUTTONUP:
           SetForegroundWindow( hWnd );
-          showPopupMenu( hWnd, NULL, -1 );
+          showPopupMenu( hWnd, NULL );
           PostMessageW( hWnd, WM_APP + 1, 0, 0 );
           return 0;
       }

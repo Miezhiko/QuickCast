@@ -41,7 +41,6 @@ VOID adjustDebugPrivileges(VOID) {
 }
 
 VOID getWarcraft3PID(VOID) {
-  DWORD appbase         = 0;
   BOOL working          = 0;
   PROCESSENTRY32W pr32  = { 0 };
   pr32.dwFlags          = sizeof(PROCESSENTRY32W);

@@ -1,4 +1,4 @@
-#pragma optimize( "ty", on )
+#pragma optimize( "t", on )
 
 #include "stdafx.h"   // include system headers
 #include "process.h"  // WC3 process stuff
@@ -10,9 +10,15 @@
 #endif
 
 INT WINAPI WinMain( _In_ HINSTANCE hInstance
-                  , _In_opt_ HINSTANCE hPrevInstance
-                  , _In_ LPSTR lpCmdLine
-                  , _In_ int nShowCmd ) {
+                  , _In_opt_ HINSTANCE _hPrevInstance
+                  , _In_ LPSTR _lpCmdLine
+                  , _In_ int _nShowCmd ) {
+  #pragma warning(push)
+  #pragma warning(disable: 4100)
+  UNREFERENCED_PARAMETER(_hPrevInstance);
+  UNREFERENCED_PARAMETER(_lpCmdLine);
+  UNREFERENCED_PARAMETER(_nShowCmd);
+  #pragma warning(pop)
 
   enableNumlock();
 
@@ -36,7 +42,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     wclx.cbClsExtra     = 0;
     wclx.cbWndExtra     = 0;
     wclx.hInstance      = hInstance;
-    wclx.hCursor        = LoadCursorW( NULL, MAKEINTRESOURCEW(IDC_ARROW) );
+    wclx.hCursor        = LoadCursor( NULL, IDC_ARROW );
     wclx.hbrBackground  = (HBRUSH)( COLOR_BTNFACE + 1 );   
 
     wclx.lpszMenuName   = NULL;
@@ -102,11 +108,12 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
 
   BOOL bRet; 
   MSG msg;
-  while( ( bRet = GetMessageW(&msg, NULL, 0, 0) ) != 0 )
+  while( ( bRet = GetMessageW(&msg, NULL, 0, 0) ) != 0 ) {
     if (bRet != -1)  {
       TranslateMessage(&msg);
       DispatchMessageW(&msg);
     }
+  }
 
   #ifndef USE_INJECT
   UnhookWindowsHookEx(KEYBOARD_HOOK);
@@ -124,5 +131,5 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     ReleaseMutex(MUTEX_HANDLE);
   }
 
-  return msg.wParam;
+  return 0;
 }

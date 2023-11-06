@@ -33,14 +33,13 @@ inline VOID enableNumlock(VOID) {
   }
 }
 
-// 0x31 is one, etc...
-VOID keyPress(DWORD keyCode) {
+VOID keyPress(WORD keyCode) {
   INPUT input;
-        input.type = INPUT_KEYBOARD;
-        input.ki.wVk = keyCode;
-        input.ki.dwFlags = 0;
-        input.ki.time = 0;
-        input.ki.dwExtraInfo = 0;
+        input.type            = INPUT_KEYBOARD;
+        input.ki.wVk          = keyCode;
+        input.ki.dwFlags      = 0;
+        input.ki.time         = 0;
+        input.ki.dwExtraInfo  = 0;
   SendInput(1, &input, sizeof(INPUT));
   input.ki.dwFlags = KEYEVENTF_KEYUP;
   SendInput(1, &input, sizeof(INPUT));
