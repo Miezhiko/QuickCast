@@ -2,12 +2,7 @@
 
 #include "stdafx.h"   // include system headers
 #include "process.h"  // WC3 process stuff
-
-#ifdef USE_INJECT
-#include "tray.h"    // Tray
-#else
 #include "hotkeys.h"  // Hooks (and Tray)
-#endif
 
 INT WINAPI WinMain( _In_ HINSTANCE hInstance
                   , _In_opt_ HINSTANCE _hPrevInstance
@@ -63,30 +58,18 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
                                                             | MB_TOPMOST);
       goto mainExit;
     }
-
-    #ifdef USE_INJECT
-    if (!Inject()) {
-      MessageBoxW(NULL, L"Failed to inject DLL!", L"Error!", MB_ICONERROR
-                                                           | MB_OK
-                                                           | MB_TOPMOST);
-    }
-    #endif
   }
 
-  #ifndef USE_INJECT
   // using sleep with lower than 1ms timeouts
   // weird shit that can turn your process into zombie
   ZwSetTimerResolution(1, TRUE, NULL);
   parseConfigFile(L"./conf.ini");
-  #endif
 
   // Turn on Scroll Lock
   if (!(GetKeyState(VK_SCROLL) & 0x0001)) {
     keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
     keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
-
-  #ifndef USE_INJECT
 
   INPUT_DOWN.type             = INPUT_UP.type           = INPUT_MOUSE;
   INPUT_DOWN.mi.dwExtraInfo   = INPUT_UP.mi.dwExtraInfo = 0;
@@ -104,7 +87,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
                                    , KeyboardCallback
                                    , hInstance
                                    , 0 );
-  #endif
 
   BOOL bRet; 
   MSG msg;
@@ -115,7 +97,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     }
   }
 
-  #ifndef USE_INJECT
   UnhookWindowsHookEx(KEYBOARD_HOOK);
 
   // Turn off Scroll Lock
@@ -123,7 +104,6 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
     keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
-  #endif
 
   mainExit:
   if (MUTEX_HANDLE) {

@@ -10,11 +10,7 @@
 #include "memes.h"    // funny macros
 #endif
 
-#ifdef USE_INJECT
-#include "stdio.h"    // for console
-#else
 #include "tray.h"     // tray icon
-#endif
 
 inline VOID doClick(VOID) {
   #ifdef WITH_BORDERS_CHECK
@@ -57,13 +53,6 @@ inline VOID processKeyupHotkeys(DWORD code) {
   switch (code) {
     case VK_SCROLL:
       HOTKEYS_ON = !HOTKEYS_ON;
-      #ifdef USE_INJECT
-      if (HOTKEYS_ON) {
-        puts("QuickCast Enabled");
-      } else {
-        puts("QuickCast Disabled");
-      }
-      #else
       if (HOTKEYS_ON) {
         if (getNewProcessId() && WARCRAFT3PID) {
           enableNumlock();
@@ -71,19 +60,14 @@ inline VOID processKeyupHotkeys(DWORD code) {
           setThreadPriorityToHigh();
         }
       }
-      #endif
       return;
     // use tray icon to exit, this hotkey is confusing
     #ifdef WITH_MEMES
     case VK_BACK:
       if (GetKeyState( VK_CONTROL ) & 0x8000) {
-        #ifdef USE_INJECT
-          PostQuitMessage(0);
-        #else
-          if (WINDOW)
-            PostMessage( WINDOW, WM_CLOSE, 0, 0 );
-          else PostQuitMessage(0);
-        #endif
+        if (WINDOW)
+          PostMessage( WINDOW, WM_CLOSE, 0, 0 );
+        else PostQuitMessage(0);
       }
       return;
     #endif
@@ -147,13 +131,6 @@ LRESULT CALLBACK KeyboardCallback( INT uMsg
               if (GetCursorPos(&CURSOR_POSITION))
                 STORED_CURSOR_POSITION = CURSOR_POSITION;
               CUSTOM_MACROS = !CUSTOM_MACROS;
-              #ifdef USE_INJECT
-              if (CUSTOM_MACROS) {
-                puts("Custom meme macros Enabled");
-              } else {
-                puts("Custom meme macros Disabled");
-              }
-              #endif
             } else if (CUSTOM_MACROS && !TURNING_CAPSLOCK_OFF) {
               sillyWalkLOL();
             }

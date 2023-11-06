@@ -8,7 +8,6 @@ project (QuickCast)
 option(USE_LTO "Use link time optimization" TRUE)
 option(WITH_BORDERS_CHECK "Check ingame for clickable area" TRUE)
 option(WITH_MEMES "Additional funny rarely useful hotkeys" FALSE)
-option(USE_INJECT "Inject directly into process" FALSE)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION USE_LTO)
 
@@ -35,18 +34,7 @@ if (WITH_MEMES)
   add_definitions(-DWITH_MEMES=${WITH_MEMES})
 endif (WITH_MEMES)
 
-if (USE_INJECT)
-  add_library(mawa SHARED src/hotkeys.c)
-  add_definitions(-DUSE_INJECT=${USE_INJECT})
-  target_precompile_headers(mawa
-  PRIVATE
-    src/stdafx.h
-  )
-  target_link_libraries(mawa ntdll)
-else()
-  target_link_libraries(${CMAKE_PROJECT_NAME} ntdll)
-endif (USE_INJECT)
-
+target_link_libraries(${CMAKE_PROJECT_NAME} ntdll)
 target_precompile_headers(${CMAKE_PROJECT_NAME}
   PRIVATE
     src/stdafx.h

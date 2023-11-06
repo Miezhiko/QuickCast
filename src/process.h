@@ -7,10 +7,6 @@
 #include <Tlhelp32.h>
 #include <shellapi.h>
 
-#ifdef USE_INJECT
-const CHAR *DLL_NAME        = "mawa.dll";
-#endif
-
 const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
 const WCHAR *BNETRUNWC3     = L"C:\\Program Files (x86)\\Battle.net\\Battle.net.exe";
 static DWORD WARCRAFT3PID   = 0;
@@ -203,68 +199,3 @@ VOID launchW3() {
   }
 }
 #endif
-
-#ifdef USE_INJECT
-BOOL Inject(VOID) {
-  if (!HAVE_DEBUG_PRIV) {
-    return FALSE;
-  }
-
-  if (!WARCRAFT3PID) {
-    return FALSE;
-  }
-
-  HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, WARCRAFT3PID);
-  if (!hProcess) {
-    return FALSE;
-  }
-
-  // TODO: WCHAR METHODS WASN'T WORKING WITH UNKNOWN REASON!
-  const SIZE_T PATH_SIZE = MAX_PATH * sizeof(CHAR);
-  CHAR *dirPath  = malloc(PATH_SIZE);
-  CHAR *fullPath = malloc(PATH_SIZE);
-  GetCurrentDirectoryA(MAX_PATH, dirPath);
-  sprintf(fullPath, "%s\\%s", dirPath, DLL_NAME);
-
-  LPVOID LoadLibraryAddr  =
-    (LPVOID)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
-  LPVOID LLParam          =
-    (LPVOID)VirtualAllocEx(hProcess, NULL, strlen(fullPath) + 1
-                                   , MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-
-  WriteProcessMemory(hProcess, LLParam, fullPath, strlen(fullPath) + 1, NULL);
-  CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)LoadLibraryAddr, LLParam, 0, NULL);
-  CloseHandle(hProcess);
-
-  free(dirPath);
-  free(fullPath);
-
-  return TRUE;
-}
-#endif
-
-/*
-DWORD GetParentProcess(DWORD pid) {
-  HANDLE hSnapshot;
-  PROCESSENTRY32 pe32;
-  DWORD ppid = 0;
-
-  hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
-  __try{
-    if( hSnapshot == INVALID_HANDLE_VALUE ) __leave;
-    ZeroMemory( &pe32, sizeof( pe32 ) );
-    pe32.dwSize = sizeof( pe32 );
-    if( !Process32First( hSnapshot, &pe32 ) ) __leave;
-    do {
-      if( pe32.th32ProcessID == pid ) {
-        ppid = pe32.th32ParentProcessID;
-        break;
-      }
-    } while( Process32Next( hSnapshot, &pe32 ) );
-  }
-  __finally{
-    if( hSnapshot != INVALID_HANDLE_VALUE ) CloseHandle( hSnapshot );
-  }
-  return ppid;
-}
-*/
