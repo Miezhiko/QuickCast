@@ -23,7 +23,9 @@ inline VOID doClick(VOID) {
       SetCursorPos(CURSOR_POSITION.x, GAME_HEIGHT);
   #endif
   MOUSE_LEFT_CLICK
+  #ifdef WITH_MEMES
   if (CUSTOM_MACROS) STORED_CURSOR_POSITION = CURSOR_POSITION;
+  #endif
 }
 
 #ifdef WITH_MEMES
@@ -54,10 +56,12 @@ inline VOID processKeyupHotkeys(DWORD code) {
     case VK_SCROLL:
       HOTKEYS_ON = !HOTKEYS_ON;
       if (HOTKEYS_ON) {
+        enableNumlock();
         if (getNewProcessId() && WARCRAFT3PID) {
-          enableNumlock();
           setWC3PriorityToHigh();
+          #ifdef WITH_MEMES
           setThreadPriorityToHigh();
+          #endif
         }
       }
       return;

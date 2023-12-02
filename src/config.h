@@ -4,10 +4,10 @@
 #include "static.h"
 
 VOID parseConfigFile(const WCHAR* confFile) {
+  const WCHAR *KEYS_SECTION    = L"QUICKCAST";
 #ifdef WITH_BORDERS_CHECK
   const WCHAR *BORDERS_SECTION = L"BORDERS";
 #endif
-  const WCHAR *KEYS_SECTION    = L"QUICKCAST";
 
   DWORD value       = 0;
   size_t len        = 0;

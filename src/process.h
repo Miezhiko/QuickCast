@@ -10,31 +10,6 @@
 const WCHAR *WARCRAFT3EXE   = L"Warcraft III.exe";
 const WCHAR *BNETRUNWC3     = L"C:\\Program Files (x86)\\Battle.net\\Battle.net.exe";
 static DWORD WARCRAFT3PID   = 0;
-static BOOL HAVE_DEBUG_PRIV = FALSE;
-
-VOID adjustDebugPrivileges(VOID) {
-  HANDLE            hToken;
-  LUID              sedebugnameValue;
-  TOKEN_PRIVILEGES  tkp;
-
-  if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
-    return;
-  }
-  if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &sedebugnameValue)) {
-    CloseHandle(hToken);
-    return;
-  }
-
-  tkp.PrivilegeCount            = 1;
-  tkp.Privileges[0].Luid        = sedebugnameValue;
-  tkp.Privileges[0].Attributes  = SE_PRIVILEGE_ENABLED;
-  if (!AdjustTokenPrivileges(hToken, FALSE, &tkp, sizeof tkp, NULL, NULL)) {
-    CloseHandle(hToken);
-    return;
-  }
-
-  HAVE_DEBUG_PRIV = TRUE;
-}
 
 VOID getWarcraft3PID(VOID) {
   BOOL working          = 0;
@@ -62,25 +37,6 @@ VOID getWarcraft3PID(VOID) {
   }
 }
 
-HWND getFocusGlobal() {
-  HWND wnd;
-  HWND result = NULL;
-  DWORD TId, PId;
-
-  result = GetFocus();
-  if (!result) {
-    wnd = GetForegroundWindow();
-    if(wnd) {
-      TId = GetWindowThreadProcessId(wnd, &PId);
-      if (AttachThreadInput(GetCurrentThreadId(), TId, TRUE)) {
-        result = GetFocus();
-        AttachThreadInput(GetCurrentThreadId(), TId, FALSE);
-      }            
-    }
-  }
-  return result;
-}
-
 inline BOOL getNewProcessId() {
   BOOL NEW_HANDLE = FALSE;
   if (WARCRAFT3PID) {
@@ -97,6 +53,20 @@ inline BOOL getNewProcessId() {
   return NEW_HANDLE;
 }
 
+BOOL setWC3PriorityToHigh(VOID) {
+  if (WARCRAFT3PID) {
+    HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, WARCRAFT3PID);
+    if (hProcess) {
+      SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS);
+      CloseHandle(hProcess);
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+#ifdef WITH_MEMES
 BOOL setThreadPriorityToHigh(VOID) {
   BOOL success = FALSE;
 
@@ -128,20 +98,6 @@ BOOL setThreadPriorityToHigh(VOID) {
   return success;
 }
 
-BOOL setWC3PriorityToHigh(VOID) {
-  if (WARCRAFT3PID) {
-    HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION, TRUE, WARCRAFT3PID);
-    if (hProcess) {
-      SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS);
-      CloseHandle(hProcess);
-      return TRUE;
-    }
-  }
-
-  return FALSE;
-}
-
-#ifdef WITH_MEMES
 VOID TerminateWC3() {
   HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, WARCRAFT3PID);
   if (!hProcess) {

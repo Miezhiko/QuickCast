@@ -46,11 +46,9 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance
     RegisterClassExW( &wclx );
   }
 
-  adjustDebugPrivileges();
-
   {
     WINDOW = CreateWindowExW( 0, MUTEX_NAME
-                            , L"Title", WS_OVERLAPPEDWINDOW
+                            , MUTEX_NAME, WS_OVERLAPPEDWINDOW
                             , 0, 0, 0, 0, NULL, NULL, hInstance, NULL );
     if ( !WINDOW ) {
       MessageBoxW(NULL, L"Can't create window!", L"Warning!", MB_ICONERROR

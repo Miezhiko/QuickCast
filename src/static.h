@@ -13,7 +13,9 @@
 
 #define KEYMAP_OFFSET       128
 
+#ifdef WITH_MEMES
 static BOOL CUSTOM_MACROS   = FALSE;
+#endif
 
 #ifdef WITH_BORDERS_CHECK
 static LONG MENU_HEIGHT     = 75;
